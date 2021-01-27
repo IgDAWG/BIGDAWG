@@ -1,2 +1,11 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^.*\.RData$
+^.*\.Rhistory$
+^.*\.gitignore$
+^misc$
+^README\.md$
+^.zip
+^.dropbox
+^.ini
+desktop.ini

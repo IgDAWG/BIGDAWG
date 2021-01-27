@@ -1,4 +1,15 @@
+inst/doc
+misc/
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+.Rhistory[Conflict]
+*[Conflict]
+.DS_Store
+.Rhistory (1)
+.zip
+.yml
+.dropbox
+.ini
+desktop.ini
