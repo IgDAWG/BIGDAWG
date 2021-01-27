@@ -13,7 +13,7 @@ Description: Data sets and functions for chi-squared Hardy-Weinberg and case-con
 License: GPL (>= 3)
 LazyData: True
 Depends: R (>= 3.5.0)
-Imports: XML, httr, haplo.stats, parallel, knitr
+Imports: XML, httr, haplo.stats, parallel, knitr, rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
 Encoding: UTF-8
