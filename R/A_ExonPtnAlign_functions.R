@@ -12,7 +12,7 @@ GetFiles <- function(Loci) {
 
   # Get Release Version
   download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/release_version.txt",destfile="release_version.txt",method="libcurl")
-  Release <- read.table("release_version.txt",comment.chart="",sep="\t")
+  Release <- read.table("release_version.txt",comment.char="",sep="\t")
   Release <- apply(Release,MARGIN=1,FUN= function(x) gsub(": ",":",x))
   RD <- unlist(strsplit(Release[2],split=":"))[2]
   RV <- unlist(strsplit(Release[3],split=":"))[2]

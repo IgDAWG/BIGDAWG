@@ -5,7 +5,7 @@ Version: 2.3.2
 Date: 2021-01-25
 Author: Derek Pappas <djpappas75@gmail.com>, Steve Mack <Steven.Mack@ucsf.edu>, Jill
     Hollenbach <Jill.Hollenbach@ucsf.edu>
-Maintainer: Steve Mack <Steven.Mack@ucsf.edu>
+Maintainer: Derek Pappas <pappas.derek@gmail.com>
 URL: http://tools.immunogenomics.org/,
         https://github.com/IgDAWG/BIGDAWG
 BugReports: https://github.com/IgDAWG/BIGDAWG/issues
@@ -16,3 +16,4 @@ Depends: R (>= 3.5.0)
 Imports: XML, httr, haplo.stats, parallel, knitr
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
+Encoding: UTF-8
