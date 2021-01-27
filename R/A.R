@@ -6,37 +6,37 @@
 #' @param loci.ColNames The column names of the loci being analyzed.
 #' @param genos Genotype table.
 #' @param grp Case/Control or Phenotype groupings.
-#' @param Strict.Bin Logical specify if strict rare cell binning should be used in ChiSq test
+#' @param Strict.Bin Logical specify if strict rare cell binning should be used in ChiSq test.
 #' @param ExonAlign Exon protein alignment filtered for locus.
 #' @param Cores Number of cores to use for analysis.
 #' @note This function is for internal BIGDAWG use only.
 A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
-  
+
   # pull out locus specific columns
   getCol <- seq(1,length(loci.ColNames),1)[loci.ColNames %in% Locus]
   HLA_grp <- cbind(grp,genos[,getCol])
   rownames(HLA_grp) <- NULL
   nAllele <- length(na.omit(HLA_grp[,2])) + length(na.omit(HLA_grp[,3]))
-  
+
   ## extract alleles and counts for Grp1 and Grp0
   Alleles <- sort(unique(c(HLA_grp[,2],HLA_grp[,3])))
   Alleles2F <- unique(as.character(sapply(Alleles, GetField, Res=2)))
-  
+
   if( length(Alleles)>1 ) {
-    
+
     # Filter exon alignment matrix for specific alleles
     TabAA <- AlignmentFilter(ExonAlign,Alleles2F,Locus)
     TabAA.list <- lapply(seq_len(ncol(TabAA)), function(x) TabAA[,c(2,x)])
     TabAA.list <- TabAA.list[6:ncol(TabAA)]
     TabAA.names <- colnames(TabAA)[6:ncol(TabAA)]
-    
+
     # Generate List of Contingency Tables
     ConTabAA.list <- parallel::mclapply(TabAA.list,AAtable.builder,y=HLA_grp,mc.cores=Cores)
     names(ConTabAA.list) <- TabAA.names
-    
+
     # Apply Contingency Table Checker
     FlagAA.list <- parallel::mclapply(ConTabAA.list,AA.df.check,mc.cores=Cores)
-    
+
     # Run ChiSq
     csRange <- which(FlagAA.list==FALSE)
     if(Strict.Bin) {
@@ -44,30 +44,30 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
     } else {
       ChiSqTabAA.list <- parallel::mclapply(ConTabAA.list[csRange],RunChiSq_c,mc.cores=Cores)
     }
-    
-    
+
+
     # build data frame for 2x2 tables
     Final_binned.list <- lapply(ChiSqTabAA.list,"[[",1)
     ccdat.list <- lapply(Final_binned.list,TableMaker)
     OR.list <- lapply(ccdat.list, cci.pval.list) #OR
-  
+
   } else {
-    
+
     # Filter exon alignment matrix for single allele
     TabAA <- AlignmentFilter(ExonAlign,Alleles2F,Locus)
     FlagAA.list <- as.list(rep(TRUE,length(TabAA[6:length(TabAA)])))
     names(FlagAA.list) <- names(TabAA[6:length(TabAA)])
-    
+
     ChiSqTabAA.list <- NA
     OR.list <- NA
     Final_binned.list <- NA
-    
+
   }
-  
+
   ####################################################### Build Output List
-  
+
   A.tmp <- list()
-  
+
   ## AAlog_out - Positions with insufficient variation
   csRange <- which(FlagAA.list==T)
   FlagAA.fail <- rownames(do.call(rbind,FlagAA.list[csRange]))
@@ -77,7 +77,7 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
   colnames(AAlog.out) <- c("Locus","Position","Comment")
   rownames(AAlog.out) <- NULL
   A.tmp[['log']] <- AAlog.out
-  
+
   ## AminoAcid.binned_out
   if(length(ChiSqTabAA.list)>1) {
     binned.list <- lapply(ChiSqTabAA.list,"[[",2)
@@ -103,7 +103,7 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
     rownames(binned.out) <- NULL
     A.tmp[['binned']] <- binned.out
   }
-  
+
   ## overall.chisq_out
   if(length(ChiSqTabAA.list)>1) {
     ChiSq.list <- lapply(ChiSqTabAA.list,"[[",3)
@@ -123,7 +123,7 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
     Names <- c("Locus","Position","X.square","df","p.value","sig")
     A.tmp[['chisq']] <- Create.Null.Table(Locus,Names,nr=1)
   }
-  
+
   ## ORtable_out
   if(length(OR.list)>1) {
     OR.out <- do.call(rbind,OR.list)
@@ -143,7 +143,7 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
     Names <- c("Locus","Position","Residue","OR","CI.lower","CI.upper","p.value","sig")
     A.tmp[['OR']] <- Create.Null.Table(Locus,Names,nr=1)
   }
-  
+
   ## Final_binned_out (Final Table)
   if( length(Final_binned.list)>1 ) {
     Final_binned.out <- do.call(rbind,Final_binned.list)
@@ -165,7 +165,7 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
     Names <- c("Locus","Position","Residue","Group.0","Group.1")
     A.tmp[['table']] <- Create.Null.Table(Locus,Names,nr=1)
   }
-  
+
   ## AminoAcid.freq_out
   if( !is.null(Final_binned.out) ) {
     Final_binned.out[,'Group.0'] <- round(as.numeric(Final_binned.out[,'Group.0']) / sum(as.numeric(Final_binned.out),na.rm=T),digits=5)
@@ -175,7 +175,7 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
     Names <- c("Locus","Position","Residue","Group.0","Group.1")
     A.tmp[['freq']] <- Create.Null.Table(Locus,Names,nr=1)
   }
-  
+
   return(A.tmp)
-  
+
 }
