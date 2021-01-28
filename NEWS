@@ -1,4 +1,8 @@
+Changes in version 2.3.3 (2021-01-27)
+   o Fixed bug in contextual binning sort and output
+
 Changes in version 2.3.2 (2021-01-25)
+   o Release v2.32.2 restricted to internal releases
    o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.43.0, 2021-01-18).
    o Fixed bug in counting for some tables with NA values.
    o Fixed bug in protein alignment generation.
@@ -6,12 +10,12 @@ Changes in version 2.3.2 (2021-01-25)
    o Added contextual binner to chi square function (Strict.Bin argument).
 
 Changes in version 2.3.1 (2020-10-05)
-   o Resubmitted for unarchiving from CRAN. 
+   o Resubmitted for unarchiving from CRAN.
 
 Changes in version 2.3 (2019-10-17)
    o Changes to NEWS format
-   o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.38.0, 2019-10-17). 
-   
+   o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.38.0, 2019-10-17).
+
 Changes in version 2.2.1 (2018-09-27)
    o Fixed bug where passed R object exports to parameter file.
    o Small changes to console output.
@@ -96,10 +100,7 @@ Changes in version 1.9 (2017-01-20)
    o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.27.0, 2017-01-20)
 
 Changes in version 1.8.4 (2017-01-12)
-   o Naming update to haplotype output files. Haplotype loci will no longer be appended 
-  to the filename. When All.Pairwise=T, the filename will be appended with "PairwiseSet"
-  and the set number. A file will also be written to indicate which pairwise set
-  corresponds to which haplotypes.
+   o Naming update to haplotype output files. Haplotype loci will no longer be appended to the filename. When All.Pairwise=T, the filename will be appended with "PairwiseSet" and the set number. A file will also be written to indicate which pairwise set corresponds to which haplotypes.
 
 Changes in version 1.8.3 (2016-12-26)
    o Updated vignette
