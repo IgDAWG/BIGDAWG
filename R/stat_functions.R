@@ -250,9 +250,12 @@ RunChiSq_c <- function(x) {
 
     binned <- cbind(NA,NA)
     colnames(binned) <- c("Group.0","Group.1")
-    New.df <- ExpCnts
+    New.df <- x.sub
 
   }
+
+  putOrder <- order(row.names(New.df))
+  New.df <- New.df[putOrder,]
 
   if(nrow(New.df)>1) {
 
