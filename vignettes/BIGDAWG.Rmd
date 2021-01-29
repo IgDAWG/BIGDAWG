@@ -101,7 +101,7 @@ BIGDAWG has a few built-in checks to ensure data format consistency and compatib
 
 Class: String. Required. No Default.
 
-e.g., `Data="HLA_data"` -or- `Data="foo.txt" `-or- `Data=foo`
+e.g., `Data=HLA_data` -or- `Data="HLA_data"` -or- `Data="foo.txt"` -or- `Data=foo.txt`
 
 Specifies genotype data file name. May use file name within working directory or full file name path to specify file location. See Data Input section for details about file formatting. Use 'Data=HLA_data' to analyze the bundled synthetic dataset.
 
@@ -166,7 +166,7 @@ Sets the allowable per subject threshold for missing alleles. Relevant to runnin
 
 Class: Logical. Optional. Default = FALSE.
 
-Sets whether strict binning should be used during ChiSq test. Strict binning (Strict.Bin = F) will bin all rare cells (expected count < 5). Otherwise, BIGDAWG will allow for up to 20% (less than but not equal to) of the cells to have expected counts less than 5. Currently limited to H, L, and A tests. This may rescue alleles from binning and help identify significant loci/alleles.
+Sets whether strict binning should be used during Chi Square testing. Strict binning (Strict.Bin = T) will bin all rare cells (expected count < 5). Otherwise, BIGDAWG will allow for up to 20% of the cells to have expected counts less than 5. Currently limited to the H, L, and A tests. This may rescue haplotypes/alleles/amino acids from binning and help identify significant loci/alleles.
 
 **Cores.Lim**
 
