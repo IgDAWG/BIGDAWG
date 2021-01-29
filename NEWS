@@ -1,5 +1,5 @@
 Changes in version 2.3.3 (2021-01-27)
-   o Fixed bug in contextual binning sort and output
+   o Rework of contextual binning sort and output
 
 Changes in version 2.3.2 (2021-01-25)
    o Release v2.32.2 restricted to internal releases

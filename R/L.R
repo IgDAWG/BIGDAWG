@@ -8,18 +8,18 @@
 #' @param Strict.Bin Logical specify if strict rare cell binning should be used in ChiSq test
 #' @note This function is for internal BIGDAWG use only.
 L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
-  
+
   # pull out locus specific columns
   getCol <- seq(1,length(loci.ColNames),1)[loci.ColNames %in% Locus]
   HLA_grp <- cbind(grp,genos[,getCol])
   rownames(HLA_grp) <- NULL
   nAllele <- length(na.omit(HLA_grp[,2])) + length(na.omit(HLA_grp[,3]))
-  
+
   ## extract alleles and counts for Grp1 and Grp0
   Alleles <- sort(unique(c(HLA_grp[,2],HLA_grp[,3])))
-  
+
   # Build Contingency Matrix of Counts
-  Allele.df <- list()      
+  Allele.df <- list()
   for(i in 1:length(Alleles)) {
     Allele.df[[i]] <- cbind(Locus,
                             Alleles[i],
@@ -30,38 +30,38 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
   }; rm(i)
   Allele.df <- do.call(rbind,Allele.df)
   colnames(Allele.df) <- c("Locus","Allele","Group.0","Group.1")
-  
+
   Allele.con <- matrix(as.numeric(Allele.df[,3:4]),
                        ncol=2,
                        dimnames=list(Allele.df[,'Allele'],c("Group.0", "Group.1")))
-  
+
   if(nrow(Allele.con)>1) {
-    
+
     ### get expected values for cells, bin small cells, and run chi square
     if(Strict.Bin) { Result <- RunChiSq(Allele.con) } else { Result <- RunChiSq_c(Allele.con) }
     alleles_binned <- Result$Binned
     Final_binned <- Result$Matrix
     overall.chisq <- Result$Test
-    
+
     ## make a nice table of ORs, ci, p values
     ccdat <-TableMaker(Final_binned)
     ORout <- lapply(ccdat, cci.pval) #OR
     ORout <- do.call(rbind,ORout)
     colnames(ORout) <- c("OR","CI.lower","CI.upper","p.value","sig")
-    
+
   } else {
-    
+
     alleles_binned <- NA
     Final_binned <- NA
     overall.chisq <- NA
     ORout <- NA
-    
+
   }
-  
+
   ####################################################### Build Output List
-  
+
   L.tmp <- list()
-  
+
   ## Alleles.binned_out
   if(sum(is.na(alleles_binned))==2) { alleles_binned <- NA }
   if(!is.null(nrow(alleles_binned))) {
@@ -72,14 +72,14 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
     colnames(Allele.binned.tmp) <- c("Locus","Allele","Group.0","Group.1")
     if(sum(grepl("\\^",Allele.binned.tmp[,'Allele']))>0) { Allele.binned.tmp[,'Allele'] <- gsub("\\^","Abs",Allele.binned.tmp[,'Allele']) }
     L.tmp[['binned']] <- Allele.binned.tmp
-  } else { 
+  } else {
     binned.out <- cbind(Locus,'Nothing.binned',NA,NA)
     colnames(binned.out) <- c("Locus","Allele","Group.0","Group.1")
     rownames(binned.out) <- NULL
     L.tmp[['binned']] <- binned.out
   }
-  
-  
+
+
   ## Allele.freq_out
   Allele.freq.out <- cbind(rep(Locus,nrow(Allele.con)),
                            rownames(Allele.con),
@@ -89,8 +89,8 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
   colnames(Allele.freq.out) <- c("Locus","Allele","Group.0","Group.1")
   if(sum(grepl("\\^",Allele.freq.out[,'Allele']))>0) { Allele.freq.out[,'Allele'] <- gsub("\\^","Abs",Allele.freq.out[,'Allele']) }
   L.tmp[['freq']] <- Allele.freq.out
-  
-  
+
+
   ## ORtable_out
   if(!is.null(nrow(ORout))) {
     ORtable_out.tmp <- cbind(rep(Locus,nrow(ORout)),
@@ -107,22 +107,22 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
     if(sum(grepl("\\^",ORtable_out.tmp[,'Allele']))>0) { ORtable_out.tmp[,'Allele'] <- gsub("\\^","Abs",ORtable_out.tmp[,'Allele']) }
     L.tmp[['OR']] <- ORtable_out.tmp
   }
-  
-        
+
+
   ## overall.chisq_out
   if(!is.null(nrow(overall.chisq))) {
     overall.chisq.tmp <- cbind(Locus, overall.chisq)
-    rownames(overall.chisq.tmp) <- NULL 
+    rownames(overall.chisq.tmp) <- NULL
     colnames(overall.chisq.tmp) <- c("Locus","X.square","df","p.value","sig")
     L.tmp[['chisq']] <- overall.chisq.tmp
   } else {
     overall.chisq.tmp <- cbind(Locus,"NCalc","NCalc","NCalc","NCalc")
-    rownames(overall.chisq.tmp) <- NULL 
+    rownames(overall.chisq.tmp) <- NULL
     colnames(overall.chisq.tmp) <- c("Locus","X.square","df","p.value","sig")
     L.tmp[['chisq']] <- overall.chisq.tmp
   }
-  
-  
+
+
   ## Final_binned_out
   if(!is.null(nrow(Final_binned))) {
     Final_binned.tmp <- cbind(rep(Locus,nrow(Final_binned)),
@@ -139,9 +139,9 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
     if(sum(grepl("\\^",Final_binned.tmp[,'Allele']))>0) { Final_binned.tmp[,'Allele'] <- gsub("\\^","Abs",Final_binned.tmp[,'Allele']) }
     L.tmp[['table']] <- Final_binned.tmp
   }
-  
-  
+
+
   return(L.tmp)
-  
+
 
 }
