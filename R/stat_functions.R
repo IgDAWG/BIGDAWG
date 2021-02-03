@@ -278,6 +278,10 @@ RunChiSq_c <- function(x) {
   Safe.cells.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)>=5))
   Rare.cells.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)<5))
 
+  # Define Flags
+  Check.Rebinned <- FALSE
+  No.Bin <- FALSE
+
   ### pull out cells that don't need binning, bin remaining
   #unbinned
   if(length(Safe.cells.rows)>0) {
@@ -291,7 +295,6 @@ RunChiSq_c <- function(x) {
   } else {
     unbinned <- NULL
   }
-
 
   # Iterate through rows -- adding back rows until threshold exceeds 0.2 (20%)
   if( length(Rare.cells.rows)>=3 ) {
