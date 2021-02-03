@@ -293,7 +293,7 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, All.Pairwise=FALSE, Tri
 
   # LOCI SET COLUMN DEFINITIONS
   # This MUST follow DRB345 processing on the chance that DRB345 is formatted as single column
-  #   and DRB3, DRB4, or DRB5 is defined in Loci.Set.
+  # and DRB3, DRB4, or DRB5 is defined in Loci.Set.
   if(missing(Loci.Set)) {
     Set <- list(Data.Col)
   } else {
@@ -357,7 +357,7 @@ if(Output) { write.table(Check,file="Data_Summary.txt",sep=": ",col.names=F,row.
       cat("HWE performed at maximum available resolution.\n")
     }
 
-    HWE <- HWE.wrapper(Tab,colnames(Tab),Output,Verbose)
+    HWE <- HWE.wrapper(Tab,Output,Verbose)
     BD.out[['HWE']] <- HWE
     rm(HWE)
 

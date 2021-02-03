@@ -274,50 +274,45 @@ RunChiSq_c <- function(x) {
   ExpCnts <- ExpCnts[getOrder,]
   x.sub <- x[getOrder,]
 
-  # Set up test flags
-  No.Bin <- FALSE
-  Check.Rebinned <- FALSE
+  # Define Rows
+  Safe.cells.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)>=5))
+  Rare.cells.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)<5))
 
   ### pull out cells that don't need binning, bin remaining
   #unbinned
-  OK.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)>=5))
-  if(length(OK.rows)>0) {
-    if(length(OK.rows)>=2) {
-      unbinned <- x.sub[OK.rows,]
+  if(length(Safe.cells.rows)>0) {
+    if(length(Safe.cells.rows)>=2) {
+      unbinned <- x.sub[Safe.cells.rows,]
     } else {
-      unbinned <- do.call(cbind,as.list(x.sub[OK.rows,]))
-      rownames(unbinned) <- rownames(x.sub)[OK.rows]
+      unbinned <- do.call(cbind,as.list(x.sub[Safe.cells.rows,]))
+      rownames(unbinned) <- rownames(x.sub)[Safe.cells.rows]
     }
     unbinned.tmp <- unbinned
   } else {
     unbinned <- NULL
   }
 
-  #Contextual binning based on 20% max count of exp cells < 5
-  Rare.cells.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)<5))
-  Rare.cells.count <- sum(ExpCnts<5)
 
+  # Iterate through rows -- adding back rows until threshold exceeds 0.2 (20%)
   if( length(Rare.cells.rows)>=3 ) {
 
-    # For rare cells spanning more than 3 rows
-    unbinned.test <- unbinned
 
     threshold=0 ; i=1
     repeat {
 
       # Process through adding back rows until threshold exceeds 0.2 (20%)
-      get.putRow <- Rare.cells.rows[i]
+      get.putRow <- Rare.cells.rows[seq(1,i)]
       get.binRow <- Rare.cells.rows[seq(i+1,length(Rare.cells.rows))]
 
       if ( length(get.binRow)==1 ) { Stop = i - 1 ; break }
 
-      unbinned.test <- rbind(unbinned.test,
+      unbinned.test <- rbind(unbinned.tmp,
                              x.sub[get.putRow,],
                              rbind(colSums(x.sub[get.binRow,]))
       )
 
       unbinned.test.cs <- chisq.test(unbinned.test)$expected
-      threshold <- sum(unbinned.test.cs<5)/ length(unbinned)
+      threshold <- sum(unbinned.test.cs<5)/ length(unbinned.test.cs)
 
       if( threshold<=0.2 ) { i = i + 1 } else { Stop = i - 1 ; break }
 
@@ -363,7 +358,7 @@ RunChiSq_c <- function(x) {
   } else if ( length(Rare.cells.rows)==2 ) {
 
     # For Rare cells in only 2 rows
-    threshold <- Rare.cells.count / length(x.sub)
+    threshold <- sum(ExpCnts<5) / length(x.sub)
     if( threshold > 0.2 ) {
 
       # must bin both

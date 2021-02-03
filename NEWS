@@ -1,4 +1,8 @@
+Changes in version 2.3.4 (2021-02-02)
+   o Adjustment of contextual binning algorithm
+
 Changes in version 2.3.3 (2021-01-27)
+   o Release v2.3.3 restricted to internal releases
    o Rework of contextual binning sort and output
 
 Changes in version 2.3.2 (2021-01-25)
