@@ -1,8 +1,8 @@
 Package: BIGDAWG
 Type: Package
 Title: Case-Control Analysis of Multi-Allelic Loci
-Version: 2.3.3
-Date: 2021-01-25
+Version: 2.3.4
+Date: 2021-02-02
 Author: Derek Pappas <djpappas75@gmail.com>, Steve Mack <Steven.Mack@ucsf.edu>, Jill
     Hollenbach <Jill.Hollenbach@ucsf.edu>
 Maintainer: Steve Mack <Steven.Mack@ucsf.edu>
