@@ -83,8 +83,8 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
   ## Allele.freq_out
   Allele.freq.out <- cbind(rep(Locus,nrow(Allele.con)),
                            rownames(Allele.con),
-                           round(Allele.con[,'Group.0']/sum(Allele.con),digits=5),
-                           round(Allele.con[,'Group.1']/sum(Allele.con),digits=5))
+                           round(Allele.con[,'Group.0']/sum(Allele.con[,'Group.0']),digits=5),
+                           round(Allele.con[,'Group.1']/sum(Allele.con[,'Group.1']),digits=5))
   rownames(Allele.freq.out) <- NULL
   colnames(Allele.freq.out) <- c("Locus","Allele","Group.0","Group.1")
   if(sum(grepl("\\^",Allele.freq.out[,'Allele']))>0) { Allele.freq.out[,'Allele'] <- gsub("\\^","Abs",Allele.freq.out[,'Allele']) }
