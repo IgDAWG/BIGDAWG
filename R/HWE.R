@@ -3,7 +3,7 @@
 #' This is the main function for the HWE analysis.
 #' @param Tab data frame of genotype files post processing.
 #' @note This function is for internal BIGDAWG use only.
-HWE <- function(Tab,All.ColNames) {
+HWE <- function(Tab) {
 
   HWE.out <- list()
 
