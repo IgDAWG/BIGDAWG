@@ -190,72 +190,84 @@ RunChiSq <- function(x) {
   ## pull out cells that don't need binning, bin remaining
   #unbinned
   OK.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)>=5))
-  if(length(OK.rows)>0) {
+
+  if(length(OK.rows)==0) {
+
+    # All rows have cells with expected less than 5.
+    tmp.chisq <- data.frame(rbind(rep("NCalc",4)))
+    colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
+    chisq.out <- list(Matrix = NA,
+                      Binned = NA,
+                      Test = tmp.chisq,
+                      Flag = NA)
+
+  } else {
+
     if(length(OK.rows)>=2) {
       unbinned <- x[OK.rows,]
     } else {
       unbinned <- do.call(cbind,as.list(x[OK.rows,]))
       rownames(unbinned) <- rownames(x)[OK.rows]
     }
-  } else {
-    unbinned <- NULL
-  }
 
-  #binned
-  Rare.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)<5))
-  if(length(Rare.rows)>=2) {
-    binned <- x[Rare.rows,]
-    New.df <- rbind(unbinned,colSums(x[Rare.rows,]))
-    rownames(New.df)[nrow(New.df)] <- "binned"
-  } else {
-    binned <- cbind(NA,NA)
-    colnames(binned) <- c("Group.0","Group.1")
-    New.df <- x
-  }
-
-  if(nrow(New.df)>1) {
-
-    # flag if final matrix fails Cochran's rule of thumb (more than 20% of exp cells are less than 5)
-    # True = OK ; False = Not good for Chi Square
-    ExpCnts <- chisq.test(New.df)$expected
-    if(sum(ExpCnts<5)==0){
-      flag <- FALSE
-    } else if( sum(ExpCnts<5)/sum(ExpCnts>=0)<=0.2 && sum(ExpCnts>=1)>length(ExpCnts) ){
-      flag <- FALSE
+    #binned
+    Rare.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)<5))
+    if(length(Rare.rows)>=2) {
+      binned <- x[Rare.rows,]
+      New.df <- rbind(unbinned,colSums(x[Rare.rows,]))
+      rownames(New.df)[nrow(New.df)] <- "binned"
     } else {
-      flag <- TRUE
+      binned <- cbind(NA,NA)
+      colnames(binned) <- c("Group.0","Group.1")
+      New.df <- x
     }
 
-    ## chi square test on binned data
-    df.chisq <- chisq.test(New.df)
-    Sig <- if(df.chisq$p.value > 0.05) { "NS" } else { "*" }
+    if(nrow(New.df)>1) {
+
+      # flag if final matrix fails Cochran's rule of thumb (more than 20% of exp cells are less than 5)
+      # True = OK ; False = Not good for Chi Square
+      ExpCnts <- chisq.test(New.df)$expected
+      if(sum(ExpCnts<5)==0){
+        flag <- FALSE
+      } else if( sum(ExpCnts<5)/sum(ExpCnts>=0)<=0.2 && sum(ExpCnts>=1)>length(ExpCnts) ){
+        flag <- FALSE
+      } else {
+        flag <- TRUE
+      }
+
+      ## chi square test on binned data
+      df.chisq <- chisq.test(New.df)
+      Sig <- if(df.chisq$p.value > 0.05) { "NS" } else { "*" }
 
 
-    ## show results of overall chi-square analysis
-    tmp.chisq <- data.frame(cbind(round(df.chisq$statistic,digits=4),
-                                  df.chisq$parameter,
-                                  format.pval(df.chisq$p.value),
-                                  Sig))
-    colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
+      ## show results of overall chi-square analysis
+      tmp.chisq <- data.frame(cbind(round(df.chisq$statistic,digits=4),
+                                    df.chisq$parameter,
+                                    format.pval(df.chisq$p.value),
+                                    Sig))
+      colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
 
-    chisq.out <- list(Matrix = New.df,
-                      Binned = binned,
-                      Test = tmp.chisq,
-                      Flag = flag)
+      chisq.out <- list(Matrix = New.df,
+                        Binned = binned,
+                        Test = tmp.chisq,
+                        Flag = flag)
 
-    return(chisq.out)
 
-  } else {
+    } else {
 
-    flag <- TRUE
-    tmp.chisq <- data.frame(rbind(rep("NCalc",4)))
-    colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
-    chisq.out <- list(Matrix = New.df,
-                      Binned = binned,
-                      Test = tmp.chisq,
-                      Flag = flag)
+      flag <- TRUE
+      tmp.chisq <- data.frame(rbind(rep("NCalc",4)))
+      colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
+      chisq.out <- list(Matrix = New.df,
+                        Binned = binned,
+                        Test = tmp.chisq,
+                        Flag = flag)
+
+    }
 
   }
+
+  return(chisq.out)
 
 }
 
@@ -282,225 +294,239 @@ RunChiSq_c <- function(x) {
   Check.Rebinned <- FALSE
   No.Bin <- FALSE
 
-  ### pull out cells that don't need binning, bin remaining
-  #unbinned
-  if(length(Safe.cells.rows)>0) {
+  if(length(Safe.cells.rows)==0) {
+
+    # All rows have cells with expected less than 5.
+    tmp.chisq <- data.frame(rbind(rep("NCalc",4)))
+    colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
+    chisq.out <- list(Matrix = NA,
+                      Binned = NA,
+                      Test = tmp.chisq,
+                      Flag = NA)
+
+  } else {
+
+    ### pull out cells that don't need binning, bin remaining
+    #unbinned
     if(length(Safe.cells.rows)>=2) {
-      unbinned <- x.sub[Safe.cells.rows,]
+
+        unbinned <- x.sub[Safe.cells.rows,]
+
     } else {
-      unbinned <- do.call(cbind,as.list(x.sub[Safe.cells.rows,]))
-      rownames(unbinned) <- rownames(x.sub)[Safe.cells.rows]
+
+        unbinned <- do.call(cbind,as.list(x.sub[Safe.cells.rows,]))
+        rownames(unbinned) <- rownames(x.sub)[Safe.cells.rows]
+
     }
+
     unbinned.tmp <- unbinned
-  } else {
-    unbinned <- NULL
-  }
 
-  # Iterate through rows -- adding back rows until threshold exceeds 0.2 (20%)
-  if( length(Rare.cells.rows)>=3 ) {
+    # Iterate through rows -- adding back rows until threshold exceeds 0.2 (20%)
+    if( length(Rare.cells.rows)>=3 ) {
 
 
-    threshold=0 ; i=1
-    repeat {
+      threshold=0 ; i=1
+      repeat {
 
-      # Process through adding back rows until threshold exceeds 0.2 (20%)
-      get.putRow <- Rare.cells.rows[seq(1,i)]
-      get.binRow <- Rare.cells.rows[seq(i+1,length(Rare.cells.rows))]
+        # Process through adding back rows until threshold exceeds 0.2 (20%)
+        get.putRow <- Rare.cells.rows[seq(1,i)]
+        get.binRow <- Rare.cells.rows[seq(i+1,length(Rare.cells.rows))]
 
-      if ( length(get.binRow)==1 ) { Stop = i - 1 ; break }
+        if ( length(get.binRow)==1 ) { Stop = i - 1 ; break }
 
-      unbinned.test <- rbind(unbinned.tmp,
-                             x.sub[get.putRow,],
-                             rbind(colSums(x.sub[get.binRow,]))
-      )
+        unbinned.test <- rbind(unbinned.tmp,
+                               x.sub[get.putRow,],
+                               rbind(colSums(x.sub[get.binRow,]))
+        )
 
-      unbinned.test.cs <- chisq.test(unbinned.test)$expected
-      threshold <- sum(unbinned.test.cs<5)/ length(unbinned.test.cs)
+        unbinned.test.cs <- chisq.test(unbinned.test)$expected
+        threshold <- sum(unbinned.test.cs<5)/ length(unbinned.test.cs)
 
-      if( threshold<=0.2 ) { i = i + 1 } else { Stop = i - 1 ; break }
+        if( threshold<=0.2 ) { i = i + 1 } else { Stop = i - 1 ; break }
 
-    }# End repeat
+      }# End repeat
 
-    if( Stop>0 ) {
+      if( Stop>0 ) {
 
-      # Set up which rows to rescue and bin
-      getRescued <- Rare.cells.rows[1:Stop]
-      putBinned <- Rare.cells.rows[seq(i,length(Rare.cells.rows))]
+        # Set up which rows to rescue and bin
+        getRescued <- Rare.cells.rows[1:Stop]
+        putBinned <- Rare.cells.rows[seq(i,length(Rare.cells.rows))]
 
-      # binning must be more than 1 row
-      if(length(putBinned)==1) {
-        putBinned <- c(getRescued[length(getRescued)],putBinned)
-        getResuced <- getRescued[-length(getRescued)]
-      }
+        # binning must be more than 1 row
+        if(length(putBinned)==1) {
+          putBinned <- c(getRescued[length(getRescued)],putBinned)
+          getResuced <- getRescued[-length(getRescued)]
+        }
 
-      # Reclaim any rescued rows to unbinned matrix
-      if( length(getRescued) > 1 ) {
-        unbinned <- rbind(unbinned, x.sub[getRescued,])
-        rownames(unbinned)[getRescued] <- rownames(x.sub)[getRescued]
-      } else {
-        rebin.tmp <- do.call(cbind,as.list(x.sub[getRescued,]))
-        rownames(rebin.tmp) <- rownames(x.sub)[getRescued]
-        unbinned <- rbind(unbinned, rebin.tmp)
-      }
+        # Reclaim any rescued rows to unbinned matrix
+        if( length(getRescued) > 1 ) {
+          unbinned <- rbind(unbinned, x.sub[getRescued,])
+          rownames(unbinned)[getRescued] <- rownames(x.sub)[getRescued]
+        } else {
+          rebin.tmp <- do.call(cbind,as.list(x.sub[getRescued,]))
+          rownames(rebin.tmp) <- rownames(x.sub)[getRescued]
+          unbinned <- rbind(unbinned, rebin.tmp)
+        }
 
-      # Bin remaining rows
-      binned <- x.sub[putBinned,]
-      rownames(binned) <- rownames(x.sub)[putBinned]
-
-      Check.Rebinned <- TRUE
-
-    } else {
-
-      # Stop == 0
-      # No rows identified to rescue, bin all rare cell containing rows
-      binned <- x.sub[Rare.cells.rows,]
-      rownames(binned) <- rownames(x.sub)[Rare.cells.rows]
-
-    }
-
-  } else if ( length(Rare.cells.rows)==2 ) {
-
-    # For Rare cells in only 2 rows
-    threshold <- sum(ExpCnts<5) / length(x.sub)
-    if( threshold > 0.2 ) {
-
-      # must bin both
-      binned <- x.sub[Rare.cells.rows,]
-      rownames(binned) <- rownames(x.sub)[Rare.cells.rows]
-
-    } else {
-
-      # no binning required
-      No.Bin <- TRUE
-
-    }
-
-  } else {
-
-    # Rare.cells.rows == 1
-    # No binning possible
-    No.Bin <- TRUE
-
-
-  }
-
-  # Playing no favorites
-  # Check if rescued cell expected counts overlap binned expected counts
-  if(Check.Rebinned) {
-
-    # Exist if check.rebinned = T
-    # getRescued = rescued rows ... can be 1 row
-    # putBinned = binned rows ... must be greater than 1 row
-
-
-    # Rescued rows expected counts
-    if(length(getRescued)>1) {
-      rescue.expcnts <- apply(ExpCnts[getRescued,],MARGIN=1,paste,collapse=":")
-    } else {
-      rescue.expcnts <- paste(ExpCnts[getRescued,],collapse=":")
-    }
-
-    # Binned rows expected counts
-    bin.expcnts <- apply(ExpCnts[putBinned,],MARGIN=1,paste,collapse=":")
-    bin.expcnts.rev <- apply(ExpCnts[putBinned,c(2,1)],MARGIN=1,paste,collapse=":")
-
-    rebin.hits <- unique(c(which((rescue.expcnts %in% bin.expcnts)==T),
-                           which((rescue.expcnts %in% bin.expcnts.rev)==T)))
-
-    if ( length(rebin.hits)>0 ) {
-
-      putBinned <- sort(c(putBinned, getRescued[rebin.hits]))
-      getRescued <- getRescued[-rebin.hits]
-
-      if ( length(getRescued)==0 ) {
-
-        # No rescuing possible, bin all rare cell containing rows
-        binned <- x.sub[Rare.cells.rows,]
-        rownames(binned) <- rownames(x.sub)[Rare.cells.rows]
-
-        #Reset unbinned
-        unbinned <- unbinned.tmp
-
-      } else {
-
-        # Overlap in expected counts identified
-        # Rebin rows based on playing no favorites
+        # Bin remaining rows
         binned <- x.sub[putBinned,]
         rownames(binned) <- rownames(x.sub)[putBinned]
 
+        Check.Rebinned <- TRUE
+
+      } else {
+
+        # Stop == 0
+        # No rows identified to rescue, bin all rare cell containing rows
+        binned <- x.sub[Rare.cells.rows,]
+        rownames(binned) <- rownames(x.sub)[Rare.cells.rows]
+
+      }
+
+    } else if ( length(Rare.cells.rows)==2 ) {
+
+      # For Rare cells in only 2 rows
+      threshold <- sum(ExpCnts<5) / length(x.sub)
+      if( threshold > 0.2 ) {
+
+        # must bin both
+        binned <- x.sub[Rare.cells.rows,]
+        rownames(binned) <- rownames(x.sub)[Rare.cells.rows]
+
+      } else {
+
+        # no binning required
+        No.Bin <- TRUE
+
+      }
+
+    } else {
+
+      # Rare.cells.rows == 1
+      # No binning possible
+      No.Bin <- TRUE
+
+
+    }
+
+    # Playing no favorites
+    # Check if rescued cell expected counts overlap binned expected counts
+    if(Check.Rebinned) {
+
+      # Exist if check.rebinned = T
+      # getRescued = rescued rows ... can be 1 row
+      # putBinned = binned rows ... must be greater than 1 row
+
+
+      # Rescued rows expected counts
+      if(length(getRescued)>1) {
+        rescue.expcnts <- apply(ExpCnts[getRescued,],MARGIN=1,paste,collapse=":")
+      } else {
+        rescue.expcnts <- paste(ExpCnts[getRescued,],collapse=":")
+      }
+
+      # Binned rows expected counts
+      bin.expcnts <- apply(ExpCnts[putBinned,],MARGIN=1,paste,collapse=":")
+      bin.expcnts.rev <- apply(ExpCnts[putBinned,c(2,1)],MARGIN=1,paste,collapse=":")
+
+      rebin.hits <- unique(c(which((rescue.expcnts %in% bin.expcnts)==T),
+                             which((rescue.expcnts %in% bin.expcnts.rev)==T)))
+
+      if ( length(rebin.hits)>0 ) {
+
+        putBinned <- sort(c(putBinned, getRescued[rebin.hits]))
+        getRescued <- getRescued[-rebin.hits]
+
+        if ( length(getRescued)==0 ) {
+
+          # No rescuing possible, bin all rare cell containing rows
+          binned <- x.sub[Rare.cells.rows,]
+          rownames(binned) <- rownames(x.sub)[Rare.cells.rows]
+
+          #Reset unbinned
+          unbinned <- unbinned.tmp
+
+        } else {
+
+          # Overlap in expected counts identified
+          # Rebin rows based on playing no favorites
+          binned <- x.sub[putBinned,]
+          rownames(binned) <- rownames(x.sub)[putBinned]
+
+        }
+
       }
 
     }
 
-  }
 
+    # Create final matrix New.df
+    if (No.Bin) {
 
-  # Create final matrix New.df
-  if (No.Bin) {
+      binned <- cbind(NA,NA)
+      colnames(binned) <- c("Group.0","Group.1")
+      New.df <- x.sub
 
-    binned <- cbind(NA,NA)
-    colnames(binned) <- c("Group.0","Group.1")
-    New.df <- x.sub
-
-  } else {
-
-    # merge unbinned and column sums of binned
-    New.df <- rbind(unbinned,colSums(binned))
-    rownames(New.df)[nrow(New.df)] <- "binned"
-
-    # Reorder binned by row names
-    binned <- binned[order(rownames(binned)),]
-
-  }
-
-  # Reorder New.df by row names
-  putOrder <- order(row.names(New.df))
-  New.df <- New.df[putOrder,]
-
-  if(nrow(New.df)>1) {
-
-    # flag if final matrix fails Cochran's rule of thumb (more than 20% of exp cells are less than 5)
-    # True = OK ; False = Not good for Chi Square
-    ExpCnts <- chisq.test(New.df)$expected
-    if(sum(ExpCnts<5)==0){
-      flag <- FALSE
-    } else if( sum(ExpCnts<5)/length(ExpCnts)<=0.2 && sum(ExpCnts>=1)==length(ExpCnts) ){
-      flag <- FALSE
     } else {
-      flag <- TRUE
+
+      # merge unbinned and column sums of binned
+      New.df <- rbind(unbinned,colSums(binned))
+      rownames(New.df)[nrow(New.df)] <- "binned"
+
+      # Reorder binned by row names
+      binned <- binned[order(rownames(binned)),]
+
     }
 
-    ## chi square test on binned data
-    df.chisq <- chisq.test(New.df)
-    Sig <- if(df.chisq$p.value > 0.05) { "NS" } else { "*" }
+    # Reorder New.df by row names
+    putOrder <- order(row.names(New.df))
+    New.df <- New.df[putOrder,]
+
+    if(nrow(New.df)>1) {
+
+      # flag if final matrix fails Cochran's rule of thumb (more than 20% of exp cells are less than 5)
+      # True = OK ; False = Not good for Chi Square
+      ExpCnts <- chisq.test(New.df)$expected
+      if(sum(ExpCnts<5)==0){
+        flag <- FALSE
+      } else if( sum(ExpCnts<5)/length(ExpCnts)<=0.2 && sum(ExpCnts>=1)==length(ExpCnts) ){
+        flag <- FALSE
+      } else {
+        flag <- TRUE
+      }
+
+      ## chi square test on binned data
+      df.chisq <- chisq.test(New.df)
+      Sig <- if(df.chisq$p.value > 0.05) { "NS" } else { "*" }
 
 
-    ## show results of overall chi-square analysis
-    tmp.chisq <- data.frame(cbind(round(df.chisq$statistic,digits=4),
-                                  df.chisq$parameter,
-                                  format.pval(df.chisq$p.value),
-                                  Sig))
-    colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
+      ## show results of overall chi-square analysis
+      tmp.chisq <- data.frame(cbind(round(df.chisq$statistic,digits=4),
+                                    df.chisq$parameter,
+                                    format.pval(df.chisq$p.value),
+                                    Sig))
+      colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
 
-    chisq.out <- list(Matrix = New.df,
-                      Binned = binned,
-                      Test = tmp.chisq,
-                      Flag = flag)
+      chisq.out <- list(Matrix = New.df,
+                        Binned = binned,
+                        Test = tmp.chisq,
+                        Flag = flag)
 
-    return(chisq.out)
 
-  } else {
+    } else {
 
-    flag <- TRUE
-    tmp.chisq <- data.frame(rbind(rep("NCalc",4)))
-    colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
-    chisq.out <- list(Matrix = New.df,
-                      Binned = binned,
-                      Test = tmp.chisq,
-                      Flag = flag)
+      flag <- TRUE
+      tmp.chisq <- data.frame(rbind(rep("NCalc",4)))
+      colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
+      chisq.out <- list(Matrix = New.df,
+                        Binned = binned,
+                        Test = tmp.chisq,
+                        Flag = flag)
+    }
 
-    return(chisq.out)
 
   }
+
+return(chisq.out)
 
 }

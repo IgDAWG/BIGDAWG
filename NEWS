@@ -1,6 +1,9 @@
+Changes in version 2.3.5 (2021-02-09)
+   o Adjustment to contextual binning algorithm
+
 Changes in version 2.3.4 (2021-02-02)
    o Adjustment of contextual binning algorithm
-   o Fixed bug introduced in L test freq calculations.
+   o Fixed bug introduced in L test freq calculations
 
 Changes in version 2.3.3 (2021-01-27)
    o Release v2.3.3 restricted to internal releases

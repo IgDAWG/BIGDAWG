@@ -39,15 +39,27 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
 
     ### get expected values for cells, bin small cells, and run chi square
     if(Strict.Bin) { Result <- RunChiSq(Allele.con) } else { Result <- RunChiSq_c(Allele.con) }
-    alleles_binned <- Result$Binned
-    Final_binned <- Result$Matrix
-    overall.chisq <- Result$Test
 
-    ## make a nice table of ORs, ci, p values
-    ccdat <-TableMaker(Final_binned)
-    ORout <- lapply(ccdat, cci.pval) #OR
-    ORout <- do.call(rbind,ORout)
-    colnames(ORout) <- c("OR","CI.lower","CI.upper","p.value","sig")
+    if( is.na(Result$Flag) ) {
+
+      alleles_binned <- NA
+      Final_binned <- NA
+      overall.chisq <- NA
+      ORout <- NA
+
+    } else {
+
+      alleles_binned <- Result$Binned
+      Final_binned <- Result$Matrix
+      overall.chisq <- Result$Test
+
+      ## make a nice table of ORs, ci, p values
+      ccdat <-TableMaker(Final_binned)
+      ORout <- lapply(ccdat, cci.pval) #OR
+      ORout <- do.call(rbind,ORout)
+      colnames(ORout) <- c("OR","CI.lower","CI.upper","p.value","sig")
+
+    }
 
   } else {
 
@@ -64,7 +76,7 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
 
   ## Alleles.binned_out
   if(sum(is.na(alleles_binned))==2) { alleles_binned <- NA }
-  if(!is.null(nrow(alleles_binned))) {
+  if( !is.na(alleles_binned) ) {
     Allele.binned.tmp <- cbind(rep(Locus,nrow(alleles_binned)),
                                rownames(alleles_binned),
                                alleles_binned)
@@ -92,7 +104,7 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
 
 
   ## ORtable_out
-  if(!is.null(nrow(ORout))) {
+  if(!is.na(ORout)) {
     ORtable_out.tmp <- cbind(rep(Locus,nrow(ORout)),
                              rownames(ORout),
                              ORout)
@@ -110,7 +122,7 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
 
 
   ## overall.chisq_out
-  if(!is.null(nrow(overall.chisq))) {
+  if(!is.na(overall.chisq)) {
     overall.chisq.tmp <- cbind(Locus, overall.chisq)
     rownames(overall.chisq.tmp) <- NULL
     colnames(overall.chisq.tmp) <- c("Locus","X.square","df","p.value","sig")
@@ -124,7 +136,7 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
 
 
   ## Final_binned_out
-  if(!is.null(nrow(Final_binned))) {
+  if(!is.na(Final_binned)) {
     Final_binned.tmp <- cbind(rep(Locus,nrow(Final_binned)),
                               rownames(Final_binned),
                               Final_binned)
