@@ -1,8 +1,8 @@
 Package: BIGDAWG
 Type: Package
 Title: Case-Control Analysis of Multi-Allelic Loci
-Version: 2.3.5
-Date: 2021-02-09
+Version: 2.3.6
+Date: 2021-02-10
 Author: Derek Pappas <djpappas75@gmail.com>, Steve Mack <Steven.Mack@ucsf.edu>, Jill
     Hollenbach <Jill.Hollenbach@ucsf.edu>
 Maintainer: Steve Mack <Steven.Mack@ucsf.edu>
@@ -13,7 +13,8 @@ Description: Data sets and functions for chi-squared Hardy-Weinberg and case-con
 License: GPL (>= 3)
 LazyData: True
 Depends: R (>= 3.5.0)
-Imports: XML, httr, haplo.stats, parallel, rmarkdown
+Imports: XML, httr, haplo.stats, parallel
+Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
 Encoding: UTF-8

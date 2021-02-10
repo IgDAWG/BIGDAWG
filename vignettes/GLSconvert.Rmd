@@ -1,7 +1,7 @@
 ---
 title: "GLSconvert"
 author: "Derek Pappas, Ph.D. (dpappas@chori.org)"
-date: "2017-12-03"
+date: "2020-02-10"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{GLSconvert}
@@ -11,7 +11,7 @@ vignette: >
 
 ## Overview
 
-GLSconvert represents a suite of tools for cross converting HLA or KIR genotyping data from gene list text strings to multi-column tabular format as desribed in Milius RP, Mack SJ, Hollenbach JA, et al. 2013. Genotype List String: a grammar for describing HLA and KIR genotyping results in a text string. [Tissue Antigens. 82:106-112](http://www.ncbi.nlm.nih.gov/pubmed/23849068). 
+GLSconvert represents a suite of tools for cross converting HLA or KIR genotyping data from gene list text strings to multi-column tabular format as desribed in Milius RP, Mack SJ, Hollenbach JA, et al. 2013. Genotype List String: a grammar for describing HLA and KIR genotyping results in a text string. [Tissue Antigens. 82:106-112](https://pubmed.ncbi.nlm.nih.gov/23849068/). 
 
 ###Anatomy of a GL String  
 The figure below depicts a genotype List (GL) String representation of a multilocus unphased genotype. A GL String representing HLA-A genotype (A*02:69 and A*23:30, or A*02:302 and, either A*23:26 or A*23:39) and HLA-B genotype (B*44:02:13 and B*49:08) for a single individual is shown. GL String delimiters are parsed hierarchically starting from the locus delimiter (^), proceeding to the genotype delimiter (|), then the chromosome delimiter (+), and ending with the allele delimiter (/). A GL String should include the genetic system name (HLA or KIR) as part of the locus name.
@@ -45,7 +45,7 @@ Only ambiguity at the allele level is compatible with the GL conversion tool (se
 Homozygous allele calls can be represented as single alleles in the GL string. For example, HLA-A\*01:01:01:01 + HLA-A\*01:01:01:01 can be written as HLA-A*01:01:01:01. This only applies to Tab2GL conversions. When a locus is represented by a single allele in a GL string, that allele will be reported in both fields for that locus in the converted table  
 
 **HLA-DRB3, HLA-DRB4, and HLA-DRB5**  
-HLA-DRB3, HLA-DRB4, and HLA-DRB5 are parsed for homozygous or hemizygous status based on the DRB1 haplotype as defined by Andersson, 1998 (Andersson G. 1998. Evolution of the HLA-DR region. [Front Biosci. 3:d739-45](http://www.ncbi.nlm.nih.gov/pubmed/9675159)) and can be flagged for inconsistency. Inconsistent haplotypes will be indicated in a separate column called "DR.HapFlag" with the locus or loci that are inconsistent with the respective DRB1 status. You may choose not to have haplotypes flagged using the 'DRB345.Check' parameter (see below).  
+HLA-DRB3, HLA-DRB4, and HLA-DRB5 are parsed for homozygous or hemizygous status based on the DRB1 haplotype as defined by Andersson, 1998 (Andersson G. 1998. Evolution of the HLA-DR region. [Front Biosci. 3:d739-45](https://pubmed.ncbi.nlm.nih.gov/9675159/)) and can be flagged for inconsistency. Inconsistent haplotypes will be indicated in a separate column called "DR.HapFlag" with the locus or loci that are inconsistent with the respective DRB1 status. You may choose not to have haplotypes flagged using the 'DRB345.Check' parameter (see below).  
 
 **Missing Information**  
 For HLA-DRB3, HLA-DRB4, and HLA-DRB5 (HLA-DRBx) When there is missing information, either for lack of genotyping calls or absence of genotyped loci, GLSconvert allows for a convention to differentiate data missing due to genomic structural variation (i.e., locus absence). The acceptable indicator of locus absence is the 2-Field designation HLA-DRBx*00:00 (x = 3,4,5). For example, HLA-DRB5\*00:00+HLA-DRB5\*00:00 would indicate absence of a HLA-DRB5 locus and not a failed or missing genotype call. You may choose to have GLSconvert fill in absent calls for these loci. For Tab2GL conversion, a NA can be used to indicate missing due to lack of genotyping call, however a NA is not compatible with GL2Tab conversion and should be avoided.
