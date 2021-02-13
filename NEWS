@@ -1,5 +1,11 @@
+Changes in version 2.3.6 (2021-02-12)
+   o Bug in contextual binning algorithm
+   o Error messages redirected to Std Err.
+
 Changes in version 2.3.5 (2021-02-09)
+   o Release v2.3.5 restricted to internal releases
    o Adjustment to contextual binning algorithm
+
 
 Changes in version 2.3.4 (2021-02-02)
    o Release v2.3.4 restricted to internal releases
