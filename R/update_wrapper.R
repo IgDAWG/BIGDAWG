@@ -6,8 +6,6 @@
 #' @param Output Logical indicating if error reporting should be written to file.
 UpdateRelease <- function(Force=F,Restore=F,Output=F) {
 
-# @param Add.Loci Character string or vector of loci that should be added to default loci (default = HLA-A,B,C,DRB1/3/4/5,DQA1,DQB1,DPA1,DPB1).
-# Add.Loci=NULL
 
   if( !inherits(try(XML::readHTMLTable("http://cran.r-project.org/web/packages/BIGDAWG/index.html",header=F),silent=T),"try-error") ) {
 
@@ -28,7 +26,7 @@ UpdateRelease <- function(Force=F,Restore=F,Output=F) {
         # Get IMGT Release Version
         invisible(download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/release_version.txt",destfile="release_version.txt",method="libcurl"))
         Release <- read.table("release_version.txt",comment.char="",sep="\t")
-        Release <- apply(Release,MARGIN=1,FUN= function(x) gsub(": ",":",x))
+        Release <- apply(Release,MARGIN=1,FUN=function(x) gsub(": ",":",x))
         RV.current <- unlist(strsplit(Release[3],split=":"))[2]
         file.remove("release_version.txt")
 
@@ -69,22 +67,14 @@ UpdateRelease <- function(Force=F,Restore=F,Output=F) {
           Safe <- c(Safe[!grepl(".txt",Safe)],"UpdatePtnAlign.RData")
 
         #STEP 1: Define Loci and Read in Reference Exon Map Files
-          # Loci
-          #if(is.null(Add.Loci)) {
           Loci <- c("A","B","C","DPA1","DPB1","DQA1","DQB1","DRB1","DRB3","DRB4","DRB5")
-          #} else {
-          #  Loci <- unique(c(Add.Loci,"A","B","C","DPA1","DPB1","DQA1","DQB1","DRB1","DRB3","DRB4","DRB5"))
-          #}
 
-          # Map
+          #Currently DRB1, DRB3, DRB4, DRB5 aligments in single file
+          #Remove if split into individual files
+          Loci.get <- c("A","B","C","DPA1","DPB1","DQA1","DQB1","DRB")
+
+          #Exon Info
           RefTab <- BIGDAWG::ExonPtnList$RefExons
-
-          #########################################################################
-          # Need to remove following lines if DRB split into single locus files
-          # Currently DRB1/3/4/5 are contained in single DRB.prot file.
-          Loci.rep <- Loci[-grep("DRB",Loci)]
-          Loci.rep <- sort(c(Loci.rep,"DRB"))
-          #########################################################################
 
         #STEP 2: Download protein alignments and other ancillary files
           cat("Updating reference object for the amino acid analysis.\n")

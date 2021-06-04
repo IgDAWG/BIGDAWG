@@ -97,7 +97,7 @@ ExonPtnAlign.Create <- function(Locus,RefTab) {
   Pgrps <- PgrpFormat(Pgrps,Locus)
 
   #Read in Alignment
-  Name <- paste(Locus.get,"_prot.txt",sep="")
+  Name <- paste0(Locus.get,"_prot.txt")
   Align <- read.table(Name,fill=T,header=F,sep="\t",stringsAsFactors=F,strip.white=T,colClasses="character")
 
   #Trim
@@ -113,33 +113,28 @@ ExonPtnAlign.Create <- function(Locus,RefTab) {
   #Adjust rows to blank where Sequence column == Allele Name
   Align[which(Align[,1]==Align[,2]),2] <- ""
 
-  #Find start of repeating blocks
-  Start <- which(Align[,1]=="Prot") + 1
-  End <- c(Start[2:length(Start)] - 1,nrow(Align))
+  # Remove Prot Numbering Headers
+  Align <- Align[-which(Align[,1]=="Prot"),]
 
-  #Rearrange Alignment, build Alignment Block file
-  Block.size <- End[1]-Start[1] + 1
-  Block <- mat.or.vec(nr=Block.size,nc=length(Start)+1)
-  for(i in 1:length(Start) ) {
-    if(i==1) {
-      Block[,1:2] <- Align[Start[i]:End[i],1:2]
-    } else {
-      putOrder <- match(Align[Start[i]:End[i],1],Block[,1])
-      Block[putOrder,i+1] <- Align[Start[i]:End[i],2]
-    }
-  }; rm(i)
-  Block[,2:ncol(Block)] <- apply(Block[,2:ncol(Block)],MARGIN=c(1,2),FUN=gsub,pattern=0,replacement="")
+  # Get Unique Alleles
+  Alleles <- unique(Align[,1])
 
-  #Paste Sequence into Single Column -- Fill in gaps with * to make char lengths even
-  Block <- cbind(Block[,1],apply(Block[,2:ncol(Block)],MARGIN=1,paste,collapse=""))
+  # Loop Through and Build Alignment Block
+  Block <- list()
+  for(i in Alleles) {
+    getRows <- which(Align[,1]==i)
+    Block[[i]] <- paste(Align[getRows,2],collapse="")
+  }
+  Block <- cbind(Alleles,do.call(rbind,Block))
+
+  #Fill end gaps with * to make char lengths even
   Block.len <- max(as.numeric(sapply(Block[,2],FUN=nchar)))
   for( i in 1:nrow(Block) ) {
     Block.miss <- Block.len - nchar(Block[i,2])
     if( Block.miss > 0 ) {
-      Block[i,2] <- paste(Block[i,2], paste(rep("*",Block.miss-1), collapse=""))
+      Block[i,2] <- paste0(as.character(Block[i,2]), paste(rep(".",Block.miss),collapse=""))
     }
   }; rm(i)
-
 
   #Split Allele name into separate Locus and Allele, Send Back to Align object
   AlignAlleles <- do.call(rbind,strsplit(Block[,1],"[*]"))
@@ -149,59 +144,74 @@ ExonPtnAlign.Create <- function(Locus,RefTab) {
   Align <- cbind(AlignAlleles,Block)
   colnames(Align) <- c("Locus","Allele","Trimmed","FullName","Sequence")
 
-  #Define Reference
-  RefSeq <- Align[1,]
-
-  #Ensure Locus Specific Rows - Add Reference
-  Align <- Align[which(Align[,'Locus']==Locus),]
-  Align <- rbind(RefSeq,Align)
-  Align[1,1:4]  <- "RefSeq"
-  rownames(Align) <- NULL
-
-  #Get Reference Exon Map
-  RefExon <- RefTab[which(RefTab[,'Locus']==Locus),'Reference.Peptide']
-  RefStart <- as.numeric(RefTab[which(RefTab[,'Locus']==Locus),'Reference.Start'])
-  RefAllele <- RefTab[which(RefTab[,'Locus']==Locus),'Reference.Allele']
-
-  #Find Exon Specific Overlap Based on RefExon
-  Align.seq <- Align[1,'Sequence'] # map character positions
-  Align.map <- 1:nchar(Align.seq)
-  Align.map.rm <- unlist(gregexpr("\\.",Align.seq))
-  Align.map.sub <- setdiff(Align.map,Align.map.rm) # remap based on removed characters
-  Align.seq.sub <- gsub("\\.","",Align.seq)
-
-  Start.sub <- unlist(gregexpr(RefExon,Align.seq.sub))
-  End.sub <- Start.sub + nchar(RefExon) - 1
-  getMap <- Align.map.sub[Start.sub:End.sub]
-  Exon.start <- min(getMap)
-  Exon.end <- max(getMap)
-
-  #Split Sub Alignment into composite elements and Extract relavent positions
+  #Split Sub Alignment into composite elements and Extract relevant positions
   Align.split <- strsplit(Align[,'Sequence'],"")
   Align.split <- do.call(rbind,Align.split)
-  Align.split <- Align.split[,Exon.start:Exon.end]
-
   AlignMatrix <- cbind(Align[,1:4],Align.split)
-  colnames(AlignMatrix) <- c("Locus","Allele","Trimmed","FullName",paste("Position",seq(RefStart,ncol(AlignMatrix[,5:ncol(AlignMatrix)]) + RefStart - 1),sep="."))
   rownames(AlignMatrix) <- NULL
 
+  #Ensure Reference in Row 1
+  RefAllele <- paste(RefTab[which(RefTab[,'Locus']==Locus),'Reference.Locus'],
+                     RefTab[which(RefTab[,'Locus']==Locus),'Reference.Allele'],
+                     sep="*")
+  if( !AlignMatrix[1,'FullName']==RefAllele ) {
+
+    Align.tmp <- rbind(AlignMatrix[which(AlignMatrix[1,'Allele']==RefAllele),],
+                       AlignMatrix[-which(AlignMatrix[1,'Allele']==RefAllele),])
+    AlignMatrix <- Align.tmp
+    rm(Align.tmp)
+
+  }
+
+  #Save Reference Row
+  RefSeq <- AlignMatrix[1,]
+
+  #Ensure Locus Specific Rows
+  AlignMatrix <- AlignMatrix[which(AlignMatrix[,'Locus']==Locus),]
+
+  #Rebind Reference if removed (only for DRB3, DRB4, and DRB5)
+  if( !AlignMatrix[1,'FullName']==RefAllele ) { AlignMatrix <- rbind(RefSeq,AlignMatrix) }
+
+  #Remove columns with no amino acids positions (only for DRB3, DRB4, and DRB5)
+  #Count occurence of "." and compare to nrow of AlignMatrix
+  rmCol <- which( apply(AlignMatrix,MARGIN=2, FUN=function(x) length(which(x=="."))) == nrow(AlignMatrix) )
+  if( length(rmCol)>0 ) { AlignMatrix <- AlignMatrix[,-rmCol] }
+
   #Propagate Consensus Positions
-  for(i in 5:ncol(AlignMatrix)) {
+  for( i in 5:ncol(AlignMatrix) ) {
     x <- AlignMatrix[,i]
     x[which(x=="-")] <- x[1]
     AlignMatrix[,i] <- x
   }
 
-  #Remove Reference
-  AlignMatrix <- AlignMatrix[-1,]
+  #Rename amino acid positions based on reference numbering
+  #Deletions are named according to the preceding position with a .1,.2,etc.
+  RefStart <- as.numeric(RefTab[which(RefTab[,'Locus']==Locus),'Reference.Start'])
+  RefArray <- AlignMatrix[1,5:ncol(AlignMatrix)]
+  Names <- NULL ; RefPos <- RefStart
+  for(i in 1:length(RefArray) ) {
 
-  #Assign P groups
-  AlignMatrix <- cbind(AlignMatrix,sapply(AlignMatrix[,'FullName'],PgrpExtract,y=Pgrps))
-  colnames(AlignMatrix)[ncol(AlignMatrix)] <- "P group"
+    if(RefArray[i]==".") {
+      Names <- c(Names, paste0("Pos.",RefPos-1,".",Iteration) )
+      Iteration = Iteration + 1
+    } else {
+      Iteration=1
+      Names <- c(Names, paste0("Pos.",RefPos))
+      RefPos <- RefPos + 1
+      if (RefPos==0) { RefPos <- 1 }
+    }
+
+  }
+  colnames(AlignMatrix)[5:ncol(AlignMatrix)] <- Names
+  rownames(AlignMatrix) <- NULL
 
   #Add Absent Allele (Absence due to lack of allele and not lack of typing information)
   AlignMatrix <- rbind(c(Locus,"00:00:00:00","00:00",paste(Locus,"*00:00:00:00",sep=""),rep("^",ncol(AlignMatrix)-4)),
                        AlignMatrix)
+
+  #Assign P groups
+  AlignMatrix <- cbind(AlignMatrix, sapply(AlignMatrix[,'FullName'],PgrpExtract,y=Pgrps) )
+  colnames(AlignMatrix)[ncol(AlignMatrix)] <- "P.group"
 
   #Tally Unknowns as separate column
   AlignMatrix <- cbind(AlignMatrix,
@@ -227,7 +237,7 @@ ExonPtnAlign.Create <- function(Locus,RefTab) {
 
 #' Alignment Object Creator
 #'
-#' Synthesize Object for Exon Protein Alignments.
+#' Create Object for Exon Protein Alignments.
 #' @param Loci Loci to be bundled.
 #' @param Release IMGT/HLA database release version.
 #' @param RefTab Data of reference exons used for protein alignment creation.
