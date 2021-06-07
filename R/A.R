@@ -19,8 +19,9 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
   nAllele <- length(na.omit(HLA_grp[,2])) + length(na.omit(HLA_grp[,3]))
 
   ## extract alleles and counts for Grp1 and Grp0
-  Alleles <- sort(unique(c(HLA_grp[,2],HLA_grp[,3])))
-  Alleles2F <- unique(as.character(sapply(Alleles, GetField, Res=2)))
+  ## Use 2F because it represent unique protein molecule.
+  Alleles <- unique(c(HLA_grp[,2],HLA_grp[,3]))
+  Alleles2F <- sort(unique(as.character(sapply(Alleles, GetField, Res=2))))
 
   if( length(Alleles)>1 ) {
 

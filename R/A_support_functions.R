@@ -8,7 +8,7 @@
 AlignmentFilter <- function(Align, Alleles, Locus) {
 
   getCols <- c(match(c("Trimmed","P.group","Unknowns","NullPositions"),colnames(Align)),
-               grep("Position\\.",colnames(Align)))
+               grep("Pos\\.",colnames(Align)))
   Align.sub <- unique(Align[,getCols])
   Align.sub <- Align.sub[Align.sub[,'Trimmed'] %in% Alleles,]
 
