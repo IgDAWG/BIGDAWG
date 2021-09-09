@@ -353,7 +353,7 @@ RunChiSq_c <- function(x) {
         putBinned <- Rare.cells.rows[seq(i,length(Rare.cells.rows))]
 
         # binning must be more than 1 row
-        if(length(putBinned)==1) {
+        if( length(putBinned)==1 ) {
           putBinned <- c(getRescued[length(getRescued)],putBinned)
           getResuced <- getRescued[-length(getRescued)]
         }
@@ -413,7 +413,7 @@ RunChiSq_c <- function(x) {
     # Check if rescued cell expected counts overlap binned expected counts
     if(Check.Rebinned) {
 
-      # Exist if check.rebinned = T
+      # If check.rebinned = T
       # getRescued = rescued rows ... can be 1 row
       # putBinned = binned rows ... must be greater than 1 row
 
@@ -434,26 +434,10 @@ RunChiSq_c <- function(x) {
 
       if ( length(rebin.hits)>0 ) {
 
-        putBinned <- sort(c(putBinned, getRescued[rebin.hits]))
-        getRescued <- getRescued[-rebin.hits]
-
-        if ( length(getRescued)==0 ) {
-
-          # No rescuing possible, bin all rare cell containing rows
-          binned <- x.sub[Rare.cells.rows,]
-          rownames(binned) <- rownames(x.sub)[Rare.cells.rows]
-
-          #Reset unbinned
-          unbinned <- unbinned.tmp
-
-        } else {
-
-          # Overlap in expected counts identified
-          # Rebin rows based on playing no favorites
-          binned <- x.sub[putBinned,]
-          rownames(binned) <- rownames(x.sub)[putBinned]
-
-        }
+        rebin.names <- names(rescue.expcnts[rebin.hits])
+        rebin.rows <- which((row.names(unbinned) %in% rebin.names)==T)
+        binned <- rbind(binned,unbinned[rebin.rows,,drop=F])
+        unbinned <- unbinned[-rebin.rows,]
 
       }
 
