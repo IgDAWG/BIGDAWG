@@ -1,4 +1,4 @@
-Changes in version 2.5 (2021-06-04)
+Changes in version 2.5 (2021-09-09)
    o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.45.1, 2021-07-12).
    o Small bug fix in binning algorithm
 
@@ -15,7 +15,6 @@ Changes in version 2.3.5 (2021-02-09)
    o Release v2.3.5 restricted to internal releases
    o Adjustment to contextual binning algorithm
 
-
 Changes in version 2.3.4 (2021-02-02)
    o Release v2.3.4 restricted to internal releases
    o Adjustment of contextual binning algorithm
@@ -31,7 +30,7 @@ Changes in version 2.3.2 (2021-01-25)
    o Fixed bug in counting for some tables with NA values.
    o Fixed bug in protein alignment generation.
    o Minor code adjust to CheckRelease() and UpdateRelease() functions.
-   o Added contextual binner to chi square function (Strict.Bin argument).
+   o Added contextual binning to chi square function (Strict.Bin argument).
 
 Changes in version 2.3.1 (2020-10-05)
    o Resubmitted for unarchiving from CRAN.

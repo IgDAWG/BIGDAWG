@@ -1,7 +1,7 @@
 ---
 title: "BIGDAWG"
 author: "Derek Pappas, Ph.D. (dpappas@chori.org)"
-date: "2021-02-10"
+date: "2021-09-09"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{BIGDAWG}
