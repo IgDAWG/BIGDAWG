@@ -239,7 +239,7 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, All.Pairwise=FALSE, Tri
     # Separate locus and allele names if data is formatted as Loci*Allele
     Tab[,Data.Col] <- apply(Tab[,Data.Col],MARGIN=c(1,2),FUN=Stripper)
 
-    # Sanity Check for Resoltion if Trim="T" and Trim Data
+    # Sanity Check for Resolution if Trim="T" and Trim Data
     if(Trim & CheckHLA(Tab[,Data.Col])) {
       cat("--Trimming Data.\n")
       #Tab.untrim <- Tab
@@ -250,7 +250,7 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, All.Pairwise=FALSE, Tri
       stop("Analysis Stopped.",call. = F)
     }
 
-    # Sanity Check for Expresion Variant Suffix Stripping
+    # Sanity Check for Expression Variant Suffix Stripping
     if(EVS.rm & CheckHLA(Tab[,Data.Col])) {
       cat("--Stripping Expression Variants Suffixes.\n")
       Tab[,Data.Col] <- apply(Tab[,Data.Col],MARGIN=c(1,2),gsub,pattern="[[:alpha:]]",replacement="")
@@ -290,9 +290,8 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, All.Pairwise=FALSE, Tri
 
   } # End HLA if statement and HLA specific functionalities
 
-
   # LOCI SET COLUMN DEFINITIONS
-  # This MUST follow DRB345 processing on the chance that DRB345 is formatted as single column
+  # This section MUST follow DRB345 processing (above) on the chance that DRB345 is formatted as single column
   # and DRB3, DRB4, or DRB5 is defined in Loci.Set.
   if(missing(Loci.Set)) {
     Set <- list(Data.Col)
@@ -300,6 +299,14 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, All.Pairwise=FALSE, Tri
     Loci.Set <- lapply(Loci.Set,FUN=function(x) sapply(x,toupper))
     Set <- lapply(Loci.Set,FUN=function(x) seq(1,ncol(Tab))[colnames(Tab) %in% x])
   }
+
+  # LOCUS SET DEFINED DOES NOT EXIST IN DATA
+  if(!missing(Loci.Set)) {
+    Loci.Set <- unique(unlist(Loci.Set))
+    Loci.Data <- colnames(Tab)[Data.Col]
+    if ( sum(Loci.Set %in% Loci.Data) != length(Loci.Set) ) { Err.Log(Output,"PhantomSets") ; stop("Analysis Stopped.",call. = F) }
+  }
+
 
 # ===================================================================================================================================== ####
 # Case-Control Summary ________________________________________________________________________________________________________________ ####
