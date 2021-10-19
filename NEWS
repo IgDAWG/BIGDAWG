@@ -1,3 +1,7 @@
+Changes in version 2.5.1 (2021-10-19)
+   o Check defined Loci.Set against available data Loci.
+   o Few grammatical fixes
+
 Changes in version 2.5 (2021-09-09)
    o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.45.1, 2021-07-12).
    o Small bug fix in binning algorithm

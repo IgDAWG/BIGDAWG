@@ -35,6 +35,7 @@ Err.Log <- function (Output, x, y=NULL, z=NULL) {
          Bad.Allele.HLA = { Error <- paste("\nThere may be a discrepancy with allele names. Unrecognized allele name(s) encountered: ",y,".",sep="") },
 
          #Other
+         PhantomSets = { Error <- "\nYou have defined a locus set (Loci.Set) that does not exist in the sample data. Please check the defined locus set." },
          MultipleSets = { Error <- "\nWARNING!!! You have opted to run multiple sets with overlapping loci. To avoid duplication of effort and results from the all pairwise haplotype tests, the locus test, and/or the amino acid test(!!!), it is suggested you run these tests separately on either the largest loci set possible or all loci in a given data set." },
          No.Internet = { Error <- "\nYou do not seem to be connected to the internet. CheckRelease() or UpdateRelease() cannot proceed." },
          TooMany.Missing = { Error <- "\nYour data is missing too many values at each locus. Try using Missing='ignore' when running BIGDAWG and avoid haplotype test." },         #Notifications
