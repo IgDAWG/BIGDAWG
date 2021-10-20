@@ -383,7 +383,7 @@ if(Output) { write.table(Check,file="Data_Summary.txt",sep=": ",col.names=F,row.
 
     cat("\n>>>>>>>>>>>>>>>>>>>>>>>>> Begin Locus Sets <<<<<<<<<<<<<<<<<<<<<<<<<\n\n")
     if(length(Set)==1) {
-      cat("Your analysis has a 1 set to analyze.\n")
+      cat("Your analysis has 1 set to analyze.\n")
     } else {
       cat(paste("Your analysis has ", length(Set), " sets to analyze.", sep=""),"\n")
     }
