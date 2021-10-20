@@ -7,53 +7,43 @@
 #' @note This function is for internal BIGDAWG use only.
 AlignmentFilter <- function(Align, Alleles, Locus) {
 
-  getCols <- c(match(c("Trimmed","P.group","Unknowns","NullPositions"),
+  getCols <- c(match(c("Trimmed","Unknowns","NullPositions"),
                      colnames(Align)),
                grep("Pos\\.",colnames(Align)))
-  Align.sub <- unique(Align[,getCols])
-  Align.sub <- Align.sub[Align.sub[,'Trimmed'] %in% Alleles,]
+  getRows <-  Align[,"Trimmed"] %in% Alleles
+  Align.sub <- Align[getRows,getCols]
+  Align.sub <- unique(Align.sub)
 
   if(!is.null(nrow(Align.sub))) {
 
     Alleles.S <- names(which(table(Align.sub[,'Trimmed'])==1))
     Alleles.M <- names(which(table(Align.sub[,'Trimmed'])>1))
 
-    if(length(Alleles.M>0)) {
-      # Removing Duplicates at 2-Field Level
-      Align.tmp <- list()
+    # Removing Duplicates at 2-Field Level
+    if( length(Alleles.M > 0 ) ) {
 
-      for(m in 1:length(Alleles.M)) {
+      Align.tmp <- list()
+      for( m in 1:length(Alleles.M) ) {
+
         Allele <- Alleles.M[m]
         Alignsub.Grp <- Align.sub[which(Align.sub[,"Trimmed"]==Allele),]
 
-        #for multiple matches, check first for P Group match
-        PgroupAlleles <- grep("P",Alignsub.Grp[,'P.group'],fixed=T)
+        Unknowns.Grp <- which(Alignsub.Grp[,'Unknowns']==min(Alignsub.Grp[,'Unknowns']))
+        if(length(Unknowns.Grp)>1) { Unknowns.Grp <- Unknowns.Grp[1] }
+        Align.tmp[[Allele]] <- Alignsub.Grp[Unknowns.Grp,]
 
-        if(length(PgroupAlleles)==0){
-          #if multiple matches exist, use the match with the least unknowns in sequence
-          Unknowns.Grp <- which(Alignsub.Grp[,'Unknowns']==min(Alignsub.Grp[,'Unknowns']))
-          if(length(Unknowns.Grp)>1) {Unknowns.Grp <- Unknowns.Grp[1]}
-          Align.tmp[[Allele]] <- Alignsub.Grp[Unknowns.Grp,]
-
-        } else if(length(PgroupAlleles)==1){
-          Align.tmp[[Allele]] <- Alignsub.Grp[PgroupAlleles,]
-
-        } else if(length(PgroupAlleles)>1) {
-          #if multiple matches exist, use the match with the least unknowns in sequence
-          Alignsub.Grp <- Alignsub.Grp[PgroupAlleles,]
-          Unknowns.Grp <- which(Alignsub.Grp[,'Unknowns']==min(Alignsub.Grp[,'Unknowns']))
-          if(length(Unknowns.Grp)>1) {Unknowns.Grp <- Unknowns.Grp[1]}
-          Align.tmp[[Allele]] <- Alignsub.Grp[Unknowns.Grp,]
-        }
-
-      }; rm(m)
-
+      }
       Align.tmp <- do.call(rbind,Align.tmp)
-      AlignMatrix <- rbind(Align.tmp,Align.sub[Align.sub[,'Trimmed'] %in% Alleles.S,])
+
+      if( length(Alleles.S) > 0 ) {
+        AlignMatrix <- rbind(Align.tmp, Align.sub[which(Align.sub[,'Trimmed'] %in% Alleles.S==T),,drop=F])
+      } else {
+        AlignMatrix <- Align.tmp
+      }
 
     } else {
 
-      AlignMatrix <- Align.sub[Align.sub[,'Trimmed'] %in% Alleles.S,]
+      AlignMatrix <- Align.sub
 
     }
 
@@ -61,11 +51,15 @@ AlignmentFilter <- function(Align, Alleles, Locus) {
     rownames(AlignMatrix) <- NULL
     colnames(AlignMatrix)[1] <- "Locus"
     colnames(AlignMatrix)[which(colnames(AlignMatrix)=="Trimmed")] <- "Allele.2D"
-    AlignMatrix <- AlignMatrix[order(AlignMatrix[,'Allele.2D']),]
+    AlignMatrix <- AlignMatrix[ order(AlignMatrix[,'Allele.2D']), ]
 
   } else {
 
-    AlignMatrix <- Align.sub
+    AlignMatrix <- cbind(rep(Locus,nrow(Align.sub)),Align.sub)
+    rownames(AlignMatrix) <- NULL
+    colnames(AlignMatrix)[1] <- "Locus"
+    colnames(AlignMatrix)[which(colnames(AlignMatrix)=="Trimmed")] <- "Allele.2D"
+    AlignMatrix <- AlignMatrix[ order(AlignMatrix[,'Allele.2D']), ]
 
   }
 

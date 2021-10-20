@@ -11,13 +11,18 @@ GetFiles <- function(Loci) {
   download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/wmda/hla_nom_p.txt",destfile="hla_nom_p.txt",method="libcurl")
 
   # Get Release Version
-  download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/release_version.txt",destfile="release_version.txt",method="libcurl")
-  Release <- read.table("release_version.txt",comment.char="",sep="\t")
-  Release <- apply(Release,MARGIN=1,FUN= function(x) gsub(": ",":",x))
-  RD <- unlist(strsplit(Release[2],split=":"))[2]
-  RV <- unlist(strsplit(Release[3],split=":"))[2]
+  #download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/release_version.txt",destfile="release_version.txt",method="libcurl")
+  #Release <- read.table("release_version.txt",comment.char="",sep="\t")
+  #Release <- apply(Release,MARGIN=1,FUN= function(x) gsub(": ",":",x))
+  #RD <- unlist(strsplit(Release[2],split=":"))[2]
+  #RV <- unlist(strsplit(Release[3],split=":"))[2]
+  #write.table(c(RD,RV),file="Release.txt",quote=F,col.names=F,row.names=F)
+  #file.remove("release_version.txt")
+
+  df <- readLines(con="hla_nom_p.txt", n=3)
+  RD <- unlist(strsplit(df[2],split=" "))[3]
+  RV <- paste(unlist(strsplit(df[3],split=" "))[3:4],collapse=" ")
   write.table(c(RD,RV),file="Release.txt",quote=F,col.names=F,row.names=F)
-  file.remove("release_version.txt")
 
   # Get Locus Based Alignments
   for(i in 1:length(Loci)) {
@@ -279,7 +284,8 @@ AlignObj.Update <- function(Loci,Release,RefTab) {
     load(FileName) #Loads AlignMatrix
     UpdatePtnList[[Locus]] <- AlignMatrix
   }
-  UpdatePtnList[['Release']] <- Release
+  UpdatePtnList[['Release.Version']] <- as.character(Release[2,])
+  UpdatePtnList[['Release.Date']] <- as.character(Release[1,])
   UpdatePtnList[['RefExons']] <- RefTab
   save(UpdatePtnList,file="UpdatePtnAlign.RData")
 

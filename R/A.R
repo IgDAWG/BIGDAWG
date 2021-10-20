@@ -12,14 +12,15 @@
 #' @note This function is for internal BIGDAWG use only.
 A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
 
+  # Reduce ExonAlign to Get
+
   # pull out locus specific columns
   getCol <- seq(1,length(loci.ColNames),1)[loci.ColNames %in% Locus]
   HLA_grp <- cbind(grp,genos[,getCol])
   rownames(HLA_grp) <- NULL
   nAllele <- length(na.omit(HLA_grp[,2])) + length(na.omit(HLA_grp[,3]))
 
-  ## extract alleles and counts for Grp1 and Grp0
-  ## Use 2F because it represent unique protein molecule.
+  ## extract alleles
   Alleles <- unique(c(HLA_grp[,2],HLA_grp[,3]))
   Alleles2F <- sort(unique(as.character(sapply(Alleles, GetField, Res=2))))
 
