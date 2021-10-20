@@ -19,7 +19,7 @@ Err.Log <- function (Output, x, y=NULL, z=NULL) {
          Bad.Data = { Error <- "\nYou seem to have subject data that are 0's or 1's, replace these with another value. Please see vignette." },
          Bad.DRB345.hap =  { Error <- "\nWe have encountered unanticipated DR haplotypes. Please see the 'Flagged_DRB345_Haplotypes.txt' output file." },
          Uneven.Prefix =  { Error <- "\nIt seems some (not all) of your loci are formatted as Locus*Allele. Please ensure all loci share a similar format." },
-         Bad.Format.HLA = { Error <- "\nYour HLA data includes Locus*Allele genotype formatting. Please ensure all genotypes (including absent calls) follow this format." },
+         Bad.Format.HLA = { Error <- "\nYour HLA data includes Locus*Allele genotype formatting. Please ensure all genotypes follow this format." },
          Bad.Format.Trim = { Error <- "\nYour HLA data does not appear to be formatted properly for trimming. Please see vignette." },
          Bad.Format.EVS = { Error <- "\nYour HLA data does not appear to be formatted properly for EVS stripping. Please see vignette." },
          Case.Con = { Error <- "\nYour data does not appear to contain both cases and controls. Please see vignette." },

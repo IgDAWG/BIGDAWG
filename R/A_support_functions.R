@@ -7,7 +7,8 @@
 #' @note This function is for internal BIGDAWG use only.
 AlignmentFilter <- function(Align, Alleles, Locus) {
 
-  getCols <- c(match(c("Trimmed","P.group","Unknowns","NullPositions"),colnames(Align)),
+  getCols <- c(match(c("Trimmed","P.group","Unknowns","NullPositions"),
+                     colnames(Align)),
                grep("Pos\\.",colnames(Align)))
   Align.sub <- unique(Align[,getCols])
   Align.sub <- Align.sub[Align.sub[,'Trimmed'] %in% Alleles,]
@@ -79,7 +80,7 @@ AlignmentFilter <- function(Align, Alleles, Locus) {
 #' @note This function is for internal BIGDAWG use only.
 AAtable.builder <- function(x,y) {
   #x = list element for filtered alignment
-  #y = HLA_grp
+  #y = HLA_grp (case vs control)
 
   # Create count Grp 0 v Grp 1 (Control v Case)
   x[,2] <- gsub(" ","Null",x[,2])
@@ -109,6 +110,10 @@ AAtable.builder <- function(x,y) {
 
   AminoAcid.df[is.na(AminoAcid.df)] <- 0
 
+  # drop unknowns
+  rmRow <- which(row.names(AminoAcid.df)=="Unknown")
+  if( length(rmRow) > 0 ) { AminoAcid.df <- AminoAcid.df[-rmRow,,drop=F] }
+
   return(AminoAcid.df)
 
 }
@@ -117,51 +122,54 @@ AAtable.builder <- function(x,y) {
 #'
 #' Checks amino acid contingency table data frame to ensure required variation exists.
 #' @param x contingency table.
+#' @param Strict.Bin Logical specify if strict rare cell binning should be used in ChiSq test.
 #' @note This function is for internal BIGDAWG use only.
-AA.df.check <- function(x) {
+AA.df.check <- function(x,Strict.Bin) {
   # Returns true if insufficient variations exists
+  # RunChiSq Flag is true is sufficient variant exists
 
-  # Replace NAs
-  x[is.na(x)] <- 0
-
-  if(is.null(nrow(x))){
-    return(T)
-  } else if(nrow(x)<2){
-    return(T)
-  } else if (nrow(x)==2) {
-    ExpCnts <- chisq.test(x)$expected
-    if( min(ExpCnts)!=0 & length(which(ExpCnts<5))==0 ){
-      return(F)
-    } else {
-      return(T)
-    }
+  if( nrow(x)<2 ) {
+    return(FALSE)
+  } else if (Strict.Bin) {
+    return(!(RunChiSq(x)$Flag))
   } else {
-    ExpCnts <- chisq.test(x)$expected
-    #unbinned
-    OK.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)>=5))
-    if(length(OK.rows)==0) {
-      return(T)
-    } else if(length(OK.rows)>=2) {
-      unbinned <- x[OK.rows,]
-    } else {
-      unbinned <- do.call(cbind,as.list(x[OK.rows,]))
-      rownames(unbinned) <- rownames(x)[OK.rows]
-    }
-    #binned
-    Rare.rows <- as.numeric(which(apply(ExpCnts,min,MARGIN=1)<5))
-    if(length(Rare.rows)>=2) {
-      binned <- colSums(x[Rare.rows,])
-      New.df <- rbind(unbinned,binned)
-    } else {
-      New.df <- x
-    }
-    ExpCnts.df <- chisq.test(New.df)$expected
-    if (length(which(ExpCnts.df<5))/length(which(ExpCnts.df>=1))<0.2){
-      return(F)
-    } else {
-      return(T)
-    }
+    return(!(RunChiSq_c(x)$Flag))
   }
+
+}
+
+#' Contingency Table Amino Acid ChiSq Testing
+#'
+#' Runs ChiSq test on amino acid contingency table data frames.
+#' @param x contingency table.
+#' @param Strict.Bin Logical specify if strict rare cell binning should be used in ChiSq test.
+#' @note This function is for internal BIGDAWG use only.
+AA.df.cs <- function(x,Strict.Bin) {
+  # RunChiSq on data frame
+
+  if( nrow(x) < 2 ) {
+
+    tmp.chisq <- data.frame(rbind(rep("NCalc",4)))
+    colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
+    row.names(tmp.chisq) <- "X-squared"
+    chisq.out <- list(Matrix = x,
+                      Binned = NA,
+                      Test = tmp.chisq,
+                      Flag = FALSE)
+
+
+    return( chisq.out )
+
+  } else if (Strict.Bin) {
+
+    return( RunChiSq(x) )
+
+  } else {
+
+    return( RunChiSq_c(x) )
+
+  }
+
 }
 
 #' Create Empty Table
@@ -169,7 +177,7 @@ AA.df.check <- function(x) {
 #' Creates matrix of NA for no result tables.
 #' @param Locus Locus being analyzed.
 #' @param Names Column names for final matrix.
-#' @param nr Numebr of rows.
+#' @param nr Number of rows.
 #' @note This function is for internal BIGDAWG use only.
 Create.Null.Table <- function(Locus,Names,nr) {
   nc <- length(Names)

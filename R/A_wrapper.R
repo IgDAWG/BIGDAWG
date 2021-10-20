@@ -33,10 +33,10 @@ A.wrapper <- function(loci,loci.ColNames,genos,grp,EPL,Cores,Strict.Bin,Output,V
     cat(Locus,".. ")
 
     # Read in Locus Alignment file for Locus specific exons
-    Locus.Align <- EPL[[Locus]]
+    ExonAlign <- EPL[[Locus]]
 
     # Run Amino Acid Analysis
-    A.list <- A(Locus,loci.ColNames,genos,grp,Strict.Bin,Locus.Align,Cores)
+    A.list <- A(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores)
 
     # Build Output Lists
     AAlog[[Locus]] <- A.list[['log']]

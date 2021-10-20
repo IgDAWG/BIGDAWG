@@ -31,21 +31,16 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
     TabAA.list <- TabAA.list[6:ncol(TabAA)]
     TabAA.names <- colnames(TabAA)[6:ncol(TabAA)]
 
-    # Generate List of Contingency Tables
+    # Generate Contingency Tables
     ConTabAA.list <- parallel::mclapply(TabAA.list,AAtable.builder,y=HLA_grp,mc.cores=Cores)
     names(ConTabAA.list) <- TabAA.names
 
-    # Apply Contingency Table Checker
-    FlagAA.list <- parallel::mclapply(ConTabAA.list,AA.df.check,mc.cores=Cores)
+    # Check Contingency Tables
+    # FlagAA.list <- parallel::mclapply(ConTabAA.list,AA.df.check,Strict.Bin=Strict.Bin,mc.cores=Cores)
 
     # Run ChiSq
-    csRange <- which(FlagAA.list==FALSE)
-    if(Strict.Bin) {
-      ChiSqTabAA.list <- parallel::mclapply(ConTabAA.list[csRange],RunChiSq,mc.cores=Cores)
-    } else {
-      ChiSqTabAA.list <- parallel::mclapply(ConTabAA.list[csRange],RunChiSq_c,mc.cores=Cores)
-    }
-
+    ChiSqTabAA.list <- parallel::mclapply(ConTabAA.list,AA.df.cs,Strict.Bin=Strict.Bin,mc.cores=Cores)
+    FlagAA.list <- lapply(ChiSqTabAA.list,"[[",4)
 
     # build data frame for 2x2 tables
     Final_binned.list <- lapply(ChiSqTabAA.list,"[[",1)
@@ -70,7 +65,7 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
   A.tmp <- list()
 
   ## AAlog_out - Positions with insufficient variation
-  csRange <- which(FlagAA.list==T)
+  csRange <- which(FlagAA.list==FALSE)
   FlagAA.fail <- rownames(do.call(rbind,FlagAA.list[csRange]))
   AAlog.out <- cbind(rep(Locus,length(FlagAA.fail)),
                      FlagAA.fail,

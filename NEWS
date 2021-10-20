@@ -1,6 +1,7 @@
 Changes in version 2.5.1 (2021-10-19)
    o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.46 (2021-10) Build 6c613ce).
-   o Check defined Loci.Set against available data Loci.
+   o Check defined Loci.Set against data.
+   o Few organizational chances to amino acid analysis. No change to functionality.
    o Few grammatical fixes
 
 Changes in version 2.5 (2021-09-09)

@@ -29,7 +29,6 @@ Check.Params <- function (HLA,All.Pairwise,Trim,Res,EVS.rm,Missing,Cores.Lim,Ret
   if( !is.logical(Output) ) { Err.Log(FALSE,"P.Error","Output") ; stop("Analysis Stopped.",call.=FALSE) }
   if( !is.numeric(Res) ) { Err.Log(FALSE,"P.Error","Res") ; stop("Analysis Stopped.",call.=FALSE) }
   if( !is.numeric(Cores.Lim) && !is.integer(Cores.Lim) ) { Err.Log(FALSE,"P.Error","Cores.Lim") ; stop("Analysis Stopped.",call.=FALSE) }
-
   if( !is.numeric(Missing) ) { if(Missing!="ignore") { Err.Log(FALSE,"P.Error","Missing") ; stop("Analysis Stopped.",call.=FALSE) } }
 
 }
@@ -79,7 +78,7 @@ Check.Cores <- function(Cores.Lim,Output) {
 CheckHLA <- function(x) {
   #Return TRUE if properly formatted HLA
 
-  # temporary reassignment
+  # temporary reassignment for test
   x[is.na(x)] <- "00:00" # NA cells
   x[x=="^"] <- "00:00" # absent cells
   x[x==""] <- "00:00" # empty cells

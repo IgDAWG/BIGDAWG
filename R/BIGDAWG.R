@@ -81,6 +81,12 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, All.Pairwise=FALSE, Tri
     Tab <- Data
     Data.Flag <- "R Data Object"
 
+    # Convert Empty Cells to NA
+    for ( i in 3:ncol(Tab) ) {
+      putCell <- which( sapply( Tab[,i], nchar )==0 )
+      if( length(putCell) > 0 ) { Tab[putCell,i] <- NA }
+    }
+
   }
 
   # Declare Data Input Parameter
@@ -191,7 +197,7 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, All.Pairwise=FALSE, Tri
 
     # Check Locus*Allele Formatting across all loci
     CheckCol <- sum( unlist( apply(Tab[,Data.Col], MARGIN=c(1,2), FUN = function(x) grepl("\\*",na.omit(x))) ) )
-    TotalCol <-  ( dim(Tab[,Data.Col])[1] * dim(Tab[,Data.Col])[2] ) - length(which(Tab[,Data.Col]=="^")) - sum(is.na(Tab[,Data.Col]))
+    TotalCol <-  ( dim(Tab[,Data.Col])[1] * dim(Tab[,Data.Col])[2] ) - ( length(which(Tab[,Data.Col]=="^")) + sum(is.na(Tab[,Data.Col])) )
 
     if( CheckCol>0 && CheckCol!=TotalCol ) {
       Err.Log(Output,"Bad.Format.HLA")
@@ -267,15 +273,15 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, All.Pairwise=FALSE, Tri
 
       cat("Running Amino Acid Analysis specific checks functions...\n")
 
-      Release <- as.character(unlist(EPL[['Release']]))
+      Release <- EPL$Release.Version
 
       # Sanity Check for Known HLA loci in Bundled Database Release
-      cat(paste("--Checking loci against ",Release,".\n",sep=""))
+      cat(paste("--Checking loci against database version",Release,".\n",sep=""))
       test <- CheckLoci(names(EPL),unique(colnames(Tab)[Data.Col]))
       if( test$Flag  ) { Err.Log(Output,"Bad.Locus.HLA",test$Loci) ; stop("Analysis stopped.",call. = F) }
 
       # Sanity Check for Known HLA alleles in Bundled Database Release
-      cat(paste("--Checking alleles against ",Release,".\n",sep=""))
+      cat(paste("--Checking alleles against database version",Release,".\n",sep=""))
       test <- CheckAlleles(EPL, Tab[,Data.Col])
       if( test$Flag ) { Err.Log(Output,"Bad.Allele.HLA",test$Alleles) ; stop("Analysis stopped.",call. = F) }
 

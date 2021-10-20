@@ -199,7 +199,7 @@ RunChiSq <- function(x) {
     chisq.out <- list(Matrix = NA,
                       Binned = NA,
                       Test = tmp.chisq,
-                      Flag = NA)
+                      Flag = FALSE)
 
   } else {
 
@@ -255,13 +255,12 @@ RunChiSq <- function(x) {
 
     } else {
 
-      flag <- TRUE
       tmp.chisq <- data.frame(rbind(rep("NCalc",4)))
       colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
       chisq.out <- list(Matrix = New.df,
                         Binned = binned,
                         Test = tmp.chisq,
-                        Flag = flag)
+                        Flag = FALSE)
 
     }
 
@@ -302,7 +301,7 @@ RunChiSq_c <- function(x) {
     chisq.out <- list(Matrix = NA,
                       Binned = NA,
                       Test = tmp.chisq,
-                      Flag = NA)
+                      Flag = FALSE)
 
   } else {
 
@@ -499,7 +498,7 @@ RunChiSq_c <- function(x) {
 
     } else {
 
-      flag <- TRUE
+      flag <- FALSE
       tmp.chisq <- data.frame(rbind(rep("NCalc",4)))
       colnames(tmp.chisq) <- c("X.square", "df", "p.value", "sig")
       chisq.out <- list(Matrix = New.df,
