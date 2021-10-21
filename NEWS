@@ -1,6 +1,6 @@
 Changes in version 2.5.2 (2021-10-20)
    o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.46 (2021-10) Build 6c613ce).
-   o Removed p-group aligment reduction because of full length protein alignments.
+   o Removed p-group reduction for amino acid aligment analysis.
 
 Changes in version 2.5.1 (2021-10-19)
    o Check defined Loci.Set against data.
