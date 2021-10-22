@@ -163,10 +163,17 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
 
   ## AminoAcid.freq_out
   if( !is.null(Final_binned.out) ) {
-    Group.sum <- sum(as.numeric(Final_binned.out[,c('Group.0','Group.1')]))
-    Final_binned.out[,'Group.0'] <- round(as.numeric(Final_binned.out[,'Group.0']) / Group.sum , digits=5 )
-    Final_binned.out[,'Group.1'] <- round(as.numeric(Final_binned.out[,'Group.1']) / Group.sum , digits=5 )
+
+    Positions <- unique(Final_binned.out[,'Position'])
+    for(p in Positions) {
+      getRows <- which(Final_binned.out[,'Position']==p)
+      FBO_tmp <- Final_binned.out[getRows,,drop=F]
+      Group.sum <- sum(as.numeric(FBO_tmp[,c('Group.0','Group.1')]))
+      Final_binned.out[getRows,'Group.0'] <- round(as.numeric(FBO_tmp[,'Group.0'])/Group.sum,digits=5)
+      Final_binned.out[getRows,'Group.1'] <- round(as.numeric(FBO_tmp[,'Group.1'])/Group.sum,digits=5)
+    }
     A.tmp[['freq']] <- Final_binned.out
+
   } else {
     Names <- c("Locus","Position","Residue","Group.0","Group.1")
     A.tmp[['freq']] <- Create.Null.Table(Locus,Names, nr=1)
