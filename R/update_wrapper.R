@@ -79,7 +79,7 @@ UpdateRelease <- function(Force=F,Restore=F,Output=F) {
         #STEP 2: Download protein alignments and other ancillary files
           cat("Updating reference object for the amino acid analysis.\n")
           cat("Downloading alignment files from the IMGT/HLA.\n")
-          GetFiles(Loci.rep)
+          GetFiles(Loci.get)
           Release <- read.table('Release.txt',sep="\t") # created during GetFiles download
 
         #STEP 3: Format alignments for exons of interest
