@@ -168,9 +168,8 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
     for(p in Positions) {
       getRows <- which(Final_binned.out[,'Position']==p)
       FBO_tmp <- Final_binned.out[getRows,,drop=F]
-      Group.sum <- sum(as.numeric(FBO_tmp[,c('Group.0','Group.1')]))
-      Final_binned.out[getRows,'Group.0'] <- round(as.numeric(FBO_tmp[,'Group.0'])/Group.sum,digits=5)
-      Final_binned.out[getRows,'Group.1'] <- round(as.numeric(FBO_tmp[,'Group.1'])/Group.sum,digits=5)
+      Final_binned.out[getRows,'Group.0'] <- round(as.numeric(FBO_tmp[,'Group.0']) / sum(as.numeric(FBO_tmp[,'Group.0'])), digits=5)
+      Final_binned.out[getRows,'Group.1'] <- round(as.numeric(FBO_tmp[,'Group.1']) / sum(as.numeric(FBO_tmp[,'Group.1'])), digits=5)
     }
     A.tmp[['freq']] <- Final_binned.out
 
