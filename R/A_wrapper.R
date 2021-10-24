@@ -5,13 +5,14 @@
 #' @param loci.ColNames The column names of the loci being analyzed.
 #' @param genos Genotype table.
 #' @param grp Case/Control or Phenotype groupings.
-#' @param EPL Exon protein alignment.
+#' @param grp Case/Control or Phenotype groupings.
+#' @param Exon Exon(s)for targeted analysis.
 #' @param Cores Number of cores to use for analysis.
 #' @param Strict.Bin Logical specify if strict rare cell binning should be used in ChiSq test
 #' @param Output Data return carryover from main BIGDAWG function
 #' @param Verbose Summary display carryover from main BIGDAWG function
 #' @note This function is for internal BIGDAWG use only.
-A.wrapper <- function(loci,loci.ColNames,genos,grp,EPL,Cores,Strict.Bin,Output,Verbose) {
+A.wrapper <- function(loci,loci.ColNames,genos,grp,Exon,EPL,Cores,Strict.Bin,Output,Verbose) {
 
   cat("\n>>>> STARTING AMINO ACID LEVEL ANALYSIS...\n")
 
@@ -24,16 +25,44 @@ A.wrapper <- function(loci,loci.ColNames,genos,grp,EPL,Cores,Strict.Bin,Output,V
   Final_binned <- list()
 
   cat("Processing Locus: ")
+  cat(colnames(EPL))
 
   # Loop Through Loci
-  for(x in loci) {
+  for(x in 1:length(loci)) {
 
     # Get Locus
-    Locus <- x
+    Locus <- as.character(loci[x])
     cat(Locus,".. ")
 
-    # Read in Locus Alignment file for Locus specific exons
-    ExonAlign <- EPL[[Locus]]
+    # Read in Locus Alignment file for Locus specific alignments
+    if( !missing(Exon) ) {
+
+      Exon <- as.numeric(unique(unlist(Exon)))
+
+      # Get ExonPtnAlign for Locus
+      EPL.Locus <- EPL[[Locus]]
+      RefExons <- EPL[["RefExons"]]
+      Loci.Ptn.Starts <- EPL[["ExonPtnMap"]]
+      E.Ptn.Starts <- Loci.Ptn.Starts[[Locus]]
+
+      EPL.Exon <- list() ; p <- NULL
+      for (e in 1:length(Exon)) {
+        getExon <- Exon[e]
+        if( getExon %in% E.Ptn.Starts[,'Exon'] ) {
+          if ( is.null(p) ) { p=1 } else { p = p + 1 }
+          EPL.Exon[[p]] <- Exon.Filter(Locus,getExon,EPL.Locus,RefExons,E.Ptn.Starts)
+        } else {
+          Err.Log(Output,"Exon",Locus)
+          stop("Analysis Stopped.",call. = F)
+        }
+      }
+      ExonAlign <- Condense.EPL(EPL.Exon)
+
+    } else {
+
+      ExonAlign <- EPL[[Locus]]
+
+    }
 
     # Run Amino Acid Analysis
     A.list <- A(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores)

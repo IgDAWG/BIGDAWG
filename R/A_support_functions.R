@@ -73,7 +73,7 @@ AlignmentFilter <- function(Align, Alleles, Locus) {
 #' @param y Phenotype groupings.
 #' @note This function is for internal BIGDAWG use only.
 AAtable.builder <- function(x,y) {
-  #x = list element for filtered alignment
+  #x = list element for filtered alignment (TabAA.list)
   #y = HLA_grp (case vs control)
 
   # Create count Grp 0 v Grp 1 (Control v Case)
@@ -181,3 +181,77 @@ Create.Null.Table <- function(Locus,Names,nr) {
   rownames(tmp) <- NULL
   return(tmp)
 }
+
+#' Filter Exon Specific Alignment Sections
+#'
+#' Filters the ExonPtnAlign object by locus and exon.
+#' @param Locus Locus being analyzed.
+#' @param Exon Exon being analyzed.
+#' @param EP.List ExonPtnAlign object filtered by Locus
+#' @param RefExon Reference Exon Table
+#' @param E.Ptn.Starts Exon Protein Overlay Map
+#' @note This function is for internal BIGDAWG use only.
+Exon.Filter <- function(Locus,Exon,EPL.Locus,RefExons,E.Ptn.Starts) {
+
+  # Get Reference Protoen Start
+  Ref.Start <- as.numeric(RefExons[RefExons[,'Locus']==Locus,'Reference.Start'])
+
+  # Define 5'/3' Boundary Positions
+  E.Start <- as.numeric(E.Ptn.Starts[which(E.Ptn.Starts[,'Exon']==Exon),'Start'])
+  E.Stop <- as.numeric(E.Ptn.Starts[which(E.Ptn.Starts[,'Exon']==Exon),'Stop'])
+  E.Length <- E.Stop - E.Start + 1
+
+  # Ensure Number Shift Due to lack of Position 0
+  if( E.Start >= abs(Ref.Start) ) {
+    E.Start.Pos <- E.Start + Ref.Start
+  } else {
+    E.Start.Pos <- E.Start + Ref.Start - 1
+  }
+  E.Stop.Pos <- E.Start.Pos + E.Length - 1
+
+  # Find Exon 5' Boundary Position in ExonPtnAlign Object
+  E.Start.Pos <- paste0("Pos.",E.Start.Pos)
+  getStart <- match(E.Start.Pos,colnames(EPL.Locus))
+
+  # Find Exon 3' Boundary Position
+  E.Stop.Pos <- paste0("Pos.",E.Stop.Pos)
+  getStop <- match(E.Stop.Pos,colnames(EPL.Locus))
+  testStop <- grep(paste0(E.Stop.Pos,"."),colnames(EPL.Locus))
+  if( length(testStop)>0 ) { getStop <- max(testStop) }
+
+  # Define Amino Acid Range to Carve Out
+  getOverlap <- seq(getStart,getStop)
+
+  # Restructure Final ExnPtnAlign Object
+  getEndCol <- seq(ncol(EPL.Locus)-3,ncol(EPL.Locus))
+  EPL.Locus.Exon <- EPL.Locus[,c(1:4,getOverlap,getEndCol),drop=F]
+
+  return(EPL.Locus.Exon)
+
+}
+
+#' Condensing Exon Specific Alignments to Single Dataframe
+#'
+#' Combines multiple Exon Specific Alignments into a single Alignment object
+#' @param EPL.Exon Exon-Locus Specific Amino Acid Alignment.
+#' @note This function is for internal BIGDAWG use only.
+Condense.EPL <- function(EPL.Exon) {
+
+  df.1 <- EPL.Exon[[1]][,1:4]
+  getCol <- ncol(EPL.Exon[[1]])
+  df.2 <- EPL.Exon[[1]][,seq(getCol-3,getCol)]
+
+  df <- list()
+  for( i in 1:length(EPL.Exon) ) {
+
+    totalCol <- ncol(EPL.Exon[[i]]) - 4
+    df[[i]] <- EPL.Exon[[i]][,5:totalCol,drop=F]
+
+  }
+  df <- do.call(cbind,df)
+  df.out <- cbind(df.1,df,df.2)
+
+  return(df.out)
+
+}
+

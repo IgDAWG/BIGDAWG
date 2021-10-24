@@ -5,6 +5,7 @@
 #' @param HLA Logical Indicating whether data is HLA class I/II genotyping data only.
 #' @param Run.Tests Specifics which tests to run.
 #' @param Loci.Set Input list defining which loci to use for analyses (combinations permitted).
+#' @param Exon Numeric Exon(s) for targeted amino acid analysis.
 #' @param All.Pairwise Logical indicating whether all pairwise loci should be analyzed in haplotype analysis.
 #' @param Trim Logical indicating if HLA alleles should be trimmed to a set resolution.
 #' @param Res Numeric setting what desired resolution to trim HLA alleles.
@@ -31,7 +32,7 @@
 #' # Hardy-Weinberg analysis trimming data to 2-Field resolution with no output to files (console only)
 #' # Significant locus deviation at DQB1
 #' BIGDAWG(Data="HLA_data", Run.Tests="HWE", Trim=TRUE, Res=2, Output=FALSE)
-BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, All.Pairwise=FALSE, Trim=FALSE, Res=2, EVS.rm=FALSE, Missing=2, Strict.Bin=FALSE, Cores.Lim=1L, Results.Dir, Return=FALSE, Output=TRUE, Merge.Output=FALSE, Verbose=TRUE) {
+BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALSE, Trim=FALSE, Res=2, EVS.rm=FALSE, Missing=2, Strict.Bin=FALSE, Cores.Lim=1L, Results.Dir, Return=FALSE, Output=TRUE, Merge.Output=FALSE, Verbose=TRUE) {
 
   options(warn=-1)
 
@@ -480,7 +481,7 @@ if(Output) { write.table(Check,file="Data_Summary.txt",sep=": ",col.names=F,row.
 
           if(UPL.flag) { cat("Using updated protein exon alignments for amino acid analysis.\n") }
 
-          A.list <- A.wrapper(loci,loci.ColNames,genos,grp,EPL,Cores,Strict.Bin,Output,Verbose)
+          A.list <- A.wrapper(loci,loci.ColNames,genos,grp,Exon,EPL,Cores,Strict.Bin,Output,Verbose)
 
           if(Output) {
             ## write to file

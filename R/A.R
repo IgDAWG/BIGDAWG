@@ -22,13 +22,13 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
   Alleles <- unique(c(HLA_grp[,2],HLA_grp[,3]))
   Alleles2F <- sort(unique(as.character(sapply(Alleles, GetField, Res=2))))
 
-  if( length(Alleles)>1 ) {
+  if( length(Alleles2F)>1 ) {
 
     # Filter exon alignment matrix for specific alleles
     TabAA <- AlignmentFilter(ExonAlign,Alleles2F,Locus)
     TabAA.list <- lapply(seq_len(ncol(TabAA)), function(x) TabAA[,c(2,x)])
-    TabAA.list <- TabAA.list[6:ncol(TabAA)]
-    TabAA.names <- colnames(TabAA)[6:ncol(TabAA)]
+    TabAA.list <- TabAA.list[5:ncol(TabAA)]
+    TabAA.names <- colnames(TabAA)[5:ncol(TabAA)]
 
     # Generate Contingency Tables
     ConTabAA.list <- parallel::mclapply(TabAA.list,AAtable.builder,y=HLA_grp,mc.cores=Cores)

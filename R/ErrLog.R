@@ -44,6 +44,7 @@ Err.Log <- function (Output, x, y=NULL, z=NULL) {
          AllPairwise.Merge = { Error <- "\nYou have opted to run all pairwise combinations and merge the final data tables. For a large number of loci, this could take a long time. You have been warned!" },
          NotHLA.Trim = { Error <- "\nTrimming only relevant to HLA data, no trimming performed." },
          NotHLA.EVS.rm = { Error <- "\nExpression variant suffix stripping only relevant to HLA data, no stripping performed." },
+         Exon = { Error <- paste("\n You have defined an exon that does not exist in locus ",y,". Please adjust exons or loci.set.",sep="") },
 
          #GLS Notifications
          Tab.Format = { Error <- "\nThe conversion tool encountered GL string delimiters. This isn't valid data for Tab2GL converion. Please see vignette." },

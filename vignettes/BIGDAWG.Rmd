@@ -1,7 +1,7 @@
 ---
 title: "BIGDAWG"
 author: "Derek Pappas, Ph.D. (dpappas@chori.org)"
-date: "2021-10-19"
+date: "2021-10-23"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{BIGDAWG}
@@ -132,6 +132,14 @@ Input list defining which loci to use for analyses. Combinations are permitted. 
 
 Running multiple sets is generally only relevant for the haplotype analysis without all pairwise combinations. For all other analyses, loci are treated independently. Consider running haplotype analysis independently when optioning multi-locus sets that included overlapping loci to avoid redundancies. Each locus set's output will be contained within a separate set folder numbered numerically corresponding to their order in the Loci.set parameter (see Data Output section).
 
+**Exon**
+
+Class: Numeric. Optional.
+
+e.g., `Exon=3` -or- `Exon=c(3,5,6)`
+
+A single numeric or numeric vector that defines exons to target in the amino acid analysis. Only relevant to the amino acid analysis. The defined exons are not required to be continuous. Multiple sets are not analyzed separately. The defined exons are applied to all loci in the the analysis.
+
 **All.Pairwise**
 
 Class: Logical. Optional. Default = F.
@@ -222,8 +230,8 @@ BIGDAWG(Data="data.txt", Run.Tests="H", All.Pairwise=T)
 # Run the Hardy-Weinberg and Locus analysis with non-HLA data while ignoring any missing data on a file called 'data.txt'
 BIGDAWG(Data="data.txt", HLA=F, Run.Tests=c("HWE","L"), Missing="ignore")
 
-# Run the amino acid analysis trimming data to 2-Field resolution on a file called 'data.txt'
-BIGDAWG(Data="data.txt", Run.Tests="A", Trim=T, Res=2)
+# Run the amino acid analysis on exons 2 and 3, trimming data to 2-Field resolution on a file called 'data.txt'
+BIGDAWG(Data="data.txt", Run.Tests="A", Exon=c(2,3), Trim=T, Res=2)
 
 # Run the haplotype analysis with subsets of loci on a file called 'data.txt'
 BIGDAWG(Data="data.txt", Run.Tests="H", Loci.Set=list(c("DRB1","DQB1","DPB1"),c("DRB1","DQB1")))
