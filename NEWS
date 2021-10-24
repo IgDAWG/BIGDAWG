@@ -1,5 +1,5 @@
 Changes in version 3.0.0 (2021-10-23)
-   o Allows for targeted exon specific amino acid analysis
+   o Allows for targeted exon specific amino acid analysis, Exon argument
 
 Changes in version 2.5.4 (2021-10-21)
    o Adjustment to amino acid analysis frequency calculator
