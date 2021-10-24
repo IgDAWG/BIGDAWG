@@ -138,7 +138,7 @@ Class: Numeric. Optional.
 
 e.g., `Exon=3` -or- `Exon=c(3,5,6)`
 
-A single numeric or numeric vector that defines exons to target in the amino acid analysis. Only relevant to the amino acid analysis. The defined exons are not required to be continuous. Multiple sets are not analyzed separately. The defined exons are applied to all loci in the the analysis.
+A single numeric or numeric vector that defines exons to target in the amino acid analysis. The amino acid alignment is parsed according to the overlap of the defined exons. Only relevant to the amino acid analysis. The defined exons are not required to be continuous. Multiple sets are not analyzed separately. The defined exons are applied to all loci in the the analysis.
 
 **All.Pairwise**
 
