@@ -93,6 +93,10 @@ names(BD) - Display complete list of available sets to index. For a complete lis
 
 BIGDAWG has a few built-in checks to ensure data format consistency and compatibility, especially for HLA data. BIGDAWG also does a parameter review before performing chi-squared tests and returns ‘NCalc’ (not calculated) when all genotypes have expected counts < 5 or the degrees of freedom do not allow for a test (e.g., dof < 1).
 
+## Known Issues
+
+BIGDAWG's output includes locus frequencies to provide convenient access for future reference. However, the values have been round to 5 digits (arbitrarily chosen) to make the output more concise. This rounding may introduce errors in the frequencies wherein they do not sum to 1. If downstream use of the allele frequency is required, we suggest the user calculate frequencies directly from the counts tables for their own application. Please refer to ?round section Warning for more detail on rounding considerations.
+
 ## Parameters
 
 `BIGDAWG(Data, HLA=T, Run.Tests, Loci.Set, All.Pairwise=F, Trim=F, Res=2, Missing=0, Strict.Bin=F, Cores.Lim=1L, Results.Dir, Return=F, Output=T, Verbose=T)`
@@ -138,7 +142,7 @@ Class: Numeric. Optional.
 
 e.g., `Exon=3` -or- `Exon=c(3,5,6)`
 
-A single numeric or numeric vector that defines exons to target in the amino acid analysis. The amino acid alignment is parsed according to the overlap of the defined exons. Only relevant to the amino acid analysis. The defined exons are not required to be continuous. Multiple sets are not analyzed separately. The defined exons are applied to all loci in the the analysis.
+A single numeric or numeric vector that defines exons to target in the amino acid analysis. The amino acid alignment is parsed according to the overlap of the defined exons. Only relevant to the amino acid analysis. The defined exons are not required to be continuous. Multiple sets are not analyzed separately. The defined exons are applied to all loci in the the analysis. If an exon does not exist for a given locus, BIGDAWG will register and error and the analysis will stop. In such instances, it is recommended you anlayze those Loci separately.
 
 **All.Pairwise**
 
