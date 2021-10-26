@@ -187,7 +187,7 @@ Create.Null.Table <- function(Locus,Names,nr) {
 #' Filters the ExonPtnAlign object by locus and exon.
 #' @param Locus Locus being analyzed.
 #' @param Exon Exon being analyzed.
-#' @param EP.List ExonPtnAlign object filtered by Locus
+#' @param EPL.Locus ExonPtnAlign object filtered by Locus
 #' @param RefExon Reference Exon Table
 #' @param E.Ptn.Starts Exon Protein Overlay Map
 #' @note This function is for internal BIGDAWG use only.
@@ -216,7 +216,7 @@ Exon.Filter <- function(Locus,Exon,EPL.Locus,RefExons,E.Ptn.Starts) {
   # Find Exon 3' Boundary Position
   E.Stop.Pos <- paste0("Pos.",E.Stop.Pos)
   getStop <- match(E.Stop.Pos,colnames(EPL.Locus))
-  testStop <- grep(paste0(E.Stop.Pos,"."),colnames(EPL.Locus))
+  testStop <- grep(paste0(E.Stop.Pos,"."),colnames(EPL.Locus),fixed=TRUE)
   if( length(testStop)>0 ) { getStop <- max(testStop) }
 
   # Define Amino Acid Range to Carve Out
