@@ -1,3 +1,6 @@
+Changes in version 3.0.1 (2021-10-24)
+   o adjustment to targeted exon specific amino acid analysis alignment filter
+
 Changes in version 3.0.0 (2021-10-23)
    o Allows for targeted exon specific amino acid analysis, Exon argument
 

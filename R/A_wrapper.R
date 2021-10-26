@@ -57,6 +57,7 @@ A.wrapper <- function(loci,loci.ColNames,genos,grp,Exon,EPL,Cores,Strict.Bin,Out
         }
       }
       ExonAlign <- Condense.EPL(EPL.Exon)
+      #cbind(colnames(ExonAlign))
 
     } else {
 
