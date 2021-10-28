@@ -1,3 +1,6 @@
+Changes in version 3.0.2 (2021-10-28)
+   o Added export of Exon to parameters file
+
 Changes in version 3.0.1 (2021-10-24)
    o Adjustment to targeted exon specific amino acid analysis alignment filter
    o Added known issues section to BIGDAWG vignette

@@ -1,8 +1,8 @@
 Package: BIGDAWG
 Type: Package
 Title: Case-Control Analysis of Multi-Allelic Loci
-Version: 3.0.1
-Date: 2021-10-23
+Version: 3.0.2
+Date: 2021-10-28
 Author: Derek Pappas <djpappas75@gmail.com>, Steve Mack <Steven.Mack@ucsf.edu>, Jill Hollenbach <Jill.Hollenbach@ucsf.edu>
 Maintainer: Steve Mack <Steven.Mack@ucsf.edu>
 URL: http://tools.immunogenomics.org/, https://github.com/IgDAWG/BIGDAWG
@@ -14,5 +14,5 @@ Depends: R (>= 3.5.0)
 Imports: XML, httr, haplo.stats, parallel
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8
