@@ -334,6 +334,8 @@ if(Output) { write.table(Check,file="Data_Summary.txt",sep=": ",col.names=F,row.
     if(HLA) { Trim.tmp <- Trim } else { Trim.tmp <- NULL }
     if(HLA && Trim) { Res.tmp <- Res } else { Res.tmp <- NULL }
     if(HLA) { EVS.rm.tmp <- EVS.rm } else { EVS.rm.tmp <- NULL }
+    if( !missing(Exon) ) { Exon.tmp <- paste(unique(unlist(Exon)),collapse=",") } else { Exon.tmp <- NULL }
+    Set.tmp <- paste(unique(unlist(Set)),collapse=",")
 
     Params.Run <- list(Time = format(Sys.time(), "%a %b %d %X %Y"),
                        BD.Version = as.character(packageVersion("BIGDAWG")),
@@ -344,6 +346,8 @@ if(Output) { write.table(Check,file="Data_Summary.txt",sep=": ",col.names=F,row.
                        Return.Object = Return,
                        Display.Results = Verbose,
                        HLA.Data = HLA,
+                       Loci = Set.tmp,
+                       Exon = Exon.tmp,
                        DRB345.Parsed = DRB345.tmp,
                        Tests = paste(Run,collapse=","),
                        All.Pairwise = All.Pairwise,

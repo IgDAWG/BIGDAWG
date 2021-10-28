@@ -188,7 +188,7 @@ Create.Null.Table <- function(Locus,Names,nr) {
 #' @param Locus Locus being analyzed.
 #' @param Exon Exon being analyzed.
 #' @param EPL.Locus ExonPtnAlign object filtered by Locus
-#' @param RefExon Reference Exon Table
+#' @param RefExons Reference Exon Table
 #' @param E.Ptn.Starts Exon Protein Overlay Map
 #' @note This function is for internal BIGDAWG use only.
 Exon.Filter <- function(Locus,Exon,EPL.Locus,RefExons,E.Ptn.Starts) {

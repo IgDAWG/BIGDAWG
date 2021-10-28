@@ -5,8 +5,8 @@
 #' @param loci.ColNames The column names of the loci being analyzed.
 #' @param genos Genotype table.
 #' @param grp Case/Control or Phenotype groupings.
-#' @param grp Case/Control or Phenotype groupings.
 #' @param Exon Exon(s)for targeted analysis.
+#' @param EPL Protein Alignment List.
 #' @param Cores Number of cores to use for analysis.
 #' @param Strict.Bin Logical specify if strict rare cell binning should be used in ChiSq test
 #' @param Output Data return carryover from main BIGDAWG function
@@ -42,8 +42,7 @@ A.wrapper <- function(loci,loci.ColNames,genos,grp,Exon,EPL,Cores,Strict.Bin,Out
       # Get ExonPtnAlign for Locus
       EPL.Locus <- EPL[[Locus]]
       RefExons <- EPL[["RefExons"]]
-      Loci.Ptn.Starts <- EPL[["ExonPtnMap"]]
-      E.Ptn.Starts <- Loci.Ptn.Starts[[Locus]]
+      E.Ptn.Starts <- EPL[["ExonPtnMap"]][[Locus]]
 
       EPL.Exon <- list() ; p <- NULL
       for (e in 1:length(Exon)) {
