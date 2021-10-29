@@ -129,6 +129,8 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
                       OR.out)
       colnames(OR.out) <- c("Locus","Position","Residue","OR","CI.lower","CI.upper","p.value","sig")
       rownames(OR.out) <- NULL
+      rmRows <- which(OR.out[,'sig']=="NA")
+      if( length(rmRows > 0) ) {  OR.out <- OR.out[-rmRows,,drop=F] }
       A.tmp[['OR']] <- OR.out
     } else {
       Names <- c("Locus","Position","Residue","OR","CI.lower","CI.upper","p.value","sig")

@@ -58,6 +58,8 @@ H.MC <- function(genos.sub,grp,Strict.Bin,Verbose) {
       ccdat <-TableMaker(haps_counts)
       ORout <- lapply(ccdat, cci.pval) #OR list
       ORout <- do.call(rbind,ORout) #OR matrix
+      rmRows <- which(ORout[,'sig']=="NA")
+      if( length(rmRows > 0) ) {  ORout <- ORout[-rmRows,,drop=F] }
 
 
     } else {
@@ -74,8 +76,9 @@ H.MC <- function(genos.sub,grp,Strict.Bin,Verbose) {
       ## make a nice table of ORs, ci, p values
       ccdat <-TableMaker(Final_binned)
       ORout <- lapply(ccdat, cci.pval) #OR list
-      ORout <- do.call(rbind,ORout) #OR matrix
-      ORout[ORout=="Inf"] <- "NCalc"
+      ORout <- do.call(rbind,ORout) #OR
+      rmRows <- which(ORout[,'sig']=="NA")
+      if( length(rmRows > 0) ) {  ORout <- ORout[-rmRows,,drop=F] }
 
     }
 

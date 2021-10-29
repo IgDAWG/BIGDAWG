@@ -58,6 +58,8 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
       ORout <- lapply(ccdat, cci.pval) #OR
       ORout <- do.call(rbind,ORout)
       colnames(ORout) <- c("OR","CI.lower","CI.upper","p.value","sig")
+      rmRows <- which(ORout[,'sig']=="NA")
+      if( length(rmRows > 0) ) {  ORout <- ORout[-rmRows,,drop=F] }
 
     }
 
