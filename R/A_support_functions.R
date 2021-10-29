@@ -207,12 +207,9 @@ Exon.Filter <- function(Locus,Exon,EPL.Locus,RefExons,E.Ptn.Starts) {
   } else {
     E.Start.Pos <- E.Start + Ref.Start - 1
   }
-  if( E.Start.Pos < 0 && E.Stop.Pos > 0 )  {
-    E.Stop.Pos <- E.Start.Pos + E.Length
-  } else {
-    E.Stop.Pos <- E.Start.Pos + E.Length - 1
-  }
 
+  E.Stop.Pos <- E.Start.Pos + E.Length - 1
+  if( E.Start.Pos < 0 && E.Stop.Pos > 0 )  { E.Stop.Pos <- E.Start.Pos + E.Length }
 
   # Find Exon 5' Boundary Position in ExonPtnAlign Object
   E.Start.Pos <- paste0("Pos.",E.Start.Pos)
