@@ -80,7 +80,7 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALS
 
     # Using R object
     Tab <- Data
-    Data.Flag <- "R Data Object"
+    Data.Flag <- deparse(substitute(Data))
 
     # Convert Empty Cells to NA
     for ( i in 3:ncol(Tab) ) {

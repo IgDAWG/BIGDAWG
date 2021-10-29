@@ -11,7 +11,7 @@ vignette: >
 
 ## Overview
 
-'Bridging ImmunoGenomic Data-Analysis Workflow Gaps' ('BIGDAWG') is an integrated analysis system that automates the manual data-manipulation and trafficking steps (the gaps in an analysis workflow) normally required for analyses of highly polymorphic genetic systems (e.g., the immunological human leukocyte antigen (HLA) and killer-cell Immunoglobulin-like receptor (KIR) genes) and their respective genomic data (immunogenomic) (Pappas DJ, Marin W, Hollenbach JA, Mack SJ. 2016. 'Bridging ImmunoGenomic Data Analysis Workflow Gaps (BIGDAWG): An integrated case-control analysis pipeline.' [Human Immunology. 77:283-287](https://pubmed.ncbi.nlm.nih.gov/26708359/)). Starting with unambiguous genotype data for case-control groups, 'BIGDAWG' performs tests of Hardy-Weinberg equilibrium, and carries out case-control association analyses for haplotypes, individual loci, and HLA amino acid positions.
+'Bridging ImmunoGenomic Data-Analysis Workflow Gaps' ('BIGDAWG') is an integrated analysis system that automates the manual data-manipulation and trafficking steps (the gaps in an analysis workflow) normally required for analyses of highly polymorphic genetic systems (e.g., the immunological human leukocyte antigen (HLA) and killer-cell Immunoglobulin-like receptor (KIR) genes) and their respective genomic data (immunogenomic) (Pappas DJ, Marin W, Hollenbach JA, Mack SJ. 2016. 'Bridging ImmunoGenomic Data Analysis Workflow Gaps (BIGDAWG): An integrated case-control analysis pipeline.' [Human Immunology. 77:283-287](https://pubmed.ncbi.nlm.nih.gov/26708359/)). Starting with unambiguous genotype data for case-control groups, 'BIGDAWG' performs tests of Hardy-Weinberg equilibrium, and carries out case-control association analyses for haplotypes, individual loci, specific HLA exons, and HLA amino acid positions.
 
 ## Input Data
 
@@ -63,10 +63,10 @@ After the package is run, BIGDAWG will create a new folder entitled 'output hhmm
 
 When all pairwise combinations are run in the haplotype analysis, each pairwise set will be written to a single file. A separate file called "haplotype_PairwiseSets.txt" will be written to the corresponding set's directory and will breakdown the locus make up for each PairwiseSet.
 
-Data output to both the console and text files can be supressed with Verbose=F and Output=F respectively. This is particularly useful when the user prefers to send the results to an R object (Return=T, see below) rather than to text files for further analysis. Finally, when multiple analyses are run (i.e., HWE, H, L, A) the data for each analysis (Chi Squares, Odds Ratios, Allele Frequencies, Allele Counts, etc.) can be written as set of files labeled 'Merge' for convenient access (Merge.Ouput=T).
+Data output to both the console and text files can be suppressed with Verbose=F and Output=F respectively. This is particularly useful when the user prefers to send the results to an R object (Return=T, see below) rather than to text files for further analysis. Finally, when multiple analyses are run (i.e., HWE, H, L, A) the data for each analysis (Chi Squares, Odds Ratios, Allele Frequencies, Allele Counts, etc.) can be written as set of files labeled 'Merge' for convenient access (Merge.Ouput=T).
 
 *Output As List Object*  
-With the pararmeter "Return=T", the result is returned as a list with indices for each analysis result (HWE, H, L, A). Defined loci sets will exists as list sub-elements under each respective analysis. If no Loci.Sets were specified, only one list element will exist for Set1.
+With the parameter "Return=T", the result is returned as a list with indices for each analysis result (HWE, H, L, A). Defined loci sets will exists as list sub-elements under each respective analysis. If no Loci.Sets were specified, only one list element will exist for Set1.
   
 For an example. If BIGDAWG outputs to an object called 'BD' in R (see examples below).  
 
@@ -95,11 +95,11 @@ BIGDAWG has a few built-in checks to ensure data format consistency and compatib
 
 ## Known Issues
 
-BIGDAWG's output includes locus frequencies to provide convenient access for future reference. However, the values have been round to 5 digits (arbitrarily chosen) to make the output more concise. This rounding may introduce errors in the frequencies wherein they do not sum to 1. If downstream use of the allele frequency is required, we suggest the user calculate frequencies directly from the counts tables for their own application. Please refer to ?round section Warning for more detail on rounding considerations.
+BIGDAWG's output includes locus frequencies to provide convenient access for future reference. However, the values have been rounded to 5 digits (arbitrarily chosen) to make the output more concise. This rounding may introduce errors in the frequencies wherein they do not sum to 1. If downstream use of the allele frequency is required, we suggest the user calculate frequencies directly from the counts tables for their own application. Please refer to ?round help documentation and the section Warning for more detail on rounding considerations.
 
 ## Parameters
 
-`BIGDAWG(Data, HLA=T, Run.Tests, Loci.Set, All.Pairwise=F, Trim=F, Res=2, Missing=0, Strict.Bin=F, Cores.Lim=1L, Results.Dir, Return=F, Output=T, Verbose=T)`
+`BIGDAWG(Data, HLA=T, Run.Tests, Loci.Set, Exon, All.Pairwise=F, Trim=F, Res=2, Missing=0, Strict.Bin=F, Cores.Lim=1L, Results.Dir, Return=F, Output=T, Verbose=T)`
 
 **Data**
 
@@ -142,7 +142,7 @@ Class: Numeric. Optional.
 
 e.g., `Exon=3` -or- `Exon=c(3,5,6)`
 
-A single numeric or numeric vector that defines exons to target in the amino acid analysis. The amino acid alignment is parsed according to the overlap of the defined exons. Only relevant to the amino acid analysis. The defined exons are not required to be continuous. Multiple sets are not analyzed separately. The defined exons are applied to all loci in the the analysis. If an exon does not exist for a given locus, BIGDAWG will register and error and the analysis will stop. In such instances, it is recommended you anlayze those Loci separately.
+A single numeric or numeric vector that defines exons to target in the amino acid analysis. The amino acid alignment is parsed according to the overlap of the defined exons. Only relevant to the amino acid analysis. The defined exons are not required to be continuous. Multiple sets are not analyzed separately. The defined exons are applied to all loci in the the analysis. If an exon does not exist for a given locus, BIGDAWG will register and error and the analysis will stop. In such instances, it is recommended you analyze those Loci separately. When amino acid codons overlap exon boundaries, they exon with the majority overlap (2 out of 3 nucleotides) is assigned that residue.
 
 **All.Pairwise**
 
