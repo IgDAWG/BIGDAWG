@@ -2,12 +2,14 @@
 #'
 #' Check input parameters for invalid entries.
 #' @param HLA Logical indicating whether data is HLA class I/II genotyping data only.
+#' @param Loci.Set Input list defining which loci to use for analyses (combinations permitted).
+#' @param Exon Numeric Exon(s) for targeted amino acid analysis.
 #' @param All.Pairwise Logical indicating whether all pairwise loci should be analyzed in haplotype analysis.
 #' @param Trim Logical indicating if HLA alleles should be trimmed to a set resolution.
 #' @param Res Numeric setting what desired resolution to trim HLA alleles.
 #' @param EVS.rm Logical indicating if expression variant suffixes should be removed.
 #' @param Missing Numeric setting allowable missing data for running analysis (may use "ignore").
-#' @param Cores.Lim Interger setting the number of cores accessible to BIGDAWG (Windows limit is 1 core).
+#' @param Cores.Lim Integer setting the number of cores accessible to BIGDAWG (Windows limit is 1 core).
 #' @param Return Logical Should analysis results be returned as list.
 #' @param Output Logical Should analysis results be written to output directory.
 #' @param Merge.Output Logical Should analysis results be merged into a single file for easy access.
@@ -19,9 +21,9 @@ Check.Params <- function (HLA,Loci.Set,Exon,All.Pairwise,Trim,Res,EVS.rm,Missing
   # Numerics: Res=2, Missing=2, Cores.Lim=1L
   # Untested: Data, Results.Dir, Run.Tests, Loci.Set
 
-  if( !is.logical(HLA) ) { Err.Log(FALSE,"P.Error","HLA") ; stop("Analysis Stopped.",call.=FALSE) }
-  if( !is.numeric(Exon) ) { Err.Log(FALSE,"P.Error","Exon") ; stop("Analysis Stopped.",call.=FALSE) }
-  if( !is.list(Loci.Set) ) { Err.Log(FALSE,"P.Error","Loci.Set") ; stop("Analysis Stopped.",call.=FALSE) }
+  if( is.na(as.logical(HLA)) ) { Err.Log(FALSE,"P.Error","HLA") ; stop("Analysis Stopped.",call.=FALSE) }
+  if( !missing(Loci.Set) && !is.list(Loci.Set) ) { Err.Log(FALSE,"P.Error","Loci.Set") ; stop("Analysis Stopped.",call.=FALSE) }
+  if( !missing(Exon) && !is.numeric(Exon) ) { Err.Log(FALSE,"P.Error","Exon") ; stop("Analysis Stopped.",call.=FALSE) }
   if( !is.logical(All.Pairwise) ) { Err.Log(FALSE,"P.Error","All.Pairwise") ; stop("Analysis Stopped.",call.=FALSE) }
   if( !is.logical(EVS.rm) ) { Err.Log(FALSE,"P.Error","EVS.rm") ; stop("Analysis Stopped.",call.=FALSE) }
   if( !is.logical(Trim) ) { Err.Log(FALSE,"P.Error","Trim") ; stop("Analysis Stopped.",call.=FALSE) }
