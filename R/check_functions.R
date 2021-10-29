@@ -13,13 +13,15 @@
 #' @param Merge.Output Logical Should analysis results be merged into a single file for easy access.
 #' @param Verbose Logical Should a summary of each analysis be displayed in console.
 #' @note This function is for internal use only.
-Check.Params <- function (HLA,All.Pairwise,Trim,Res,EVS.rm,Missing,Cores.Lim,Return,Output,Merge.Output,Verbose) {
+Check.Params <- function (HLA,Loci.Set,Exon,All.Pairwise,Trim,Res,EVS.rm,Missing,Cores.Lim,Return,Output,Merge.Output,Verbose) {
 
   # Logicals: HLA=TRUE, All.Pairwise=FALSE, EVS.rm=FALSE, Trim=FALSE, Return=FALSE, Merge.FALSE, Verbose=TRUE, TRUE,
   # Numerics: Res=2, Missing=2, Cores.Lim=1L
   # Untested: Data, Results.Dir, Run.Tests, Loci.Set
 
   if( !is.logical(HLA) ) { Err.Log(FALSE,"P.Error","HLA") ; stop("Analysis Stopped.",call.=FALSE) }
+  if( !is.numeric(Exon) ) { Err.Log(FALSE,"P.Error","Exon") ; stop("Analysis Stopped.",call.=FALSE) }
+  if( !is.list(Loci.Set) ) { Err.Log(FALSE,"P.Error","Loci.Set") ; stop("Analysis Stopped.",call.=FALSE) }
   if( !is.logical(All.Pairwise) ) { Err.Log(FALSE,"P.Error","All.Pairwise") ; stop("Analysis Stopped.",call.=FALSE) }
   if( !is.logical(EVS.rm) ) { Err.Log(FALSE,"P.Error","EVS.rm") ; stop("Analysis Stopped.",call.=FALSE) }
   if( !is.logical(Trim) ) { Err.Log(FALSE,"P.Error","Trim") ; stop("Analysis Stopped.",call.=FALSE) }

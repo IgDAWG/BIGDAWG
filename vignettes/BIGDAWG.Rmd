@@ -130,9 +130,9 @@ The amino acid test generally requires the most processing time. Taking advantag
 
 Class: List. Optional. Default = Use all loci.
 
-e.g., `Loci.Set=list(c("DRB1","DQB1"),c("A","DRB1","DPB1"), c("DRB1","DRB3"))`
+e.g., `Loci.Set=list(c("DRB1","DQB1"),c("A","DRB1","DPB1"), c("DRB1","DRB3"))`  -or- `Loci.Set=list("A")`
 
-Input list defining which loci to use for analyses. Combinations are permitted. If you included HLA-DRB3,-DRB4,-DRB5 as a collapsed column pair ('DRB3/4/5'), you must specifiy the single locus in the Loci.set if you wish them to be included in an analysis set (i.e., 'DRB3' **NOT** 'DRB3/4/5'). The pair of alleles for a locus must be in adjacent columns in the analyzed data set.
+Input list defining which loci to use for analyses. Combinations are permitted. If you included HLA-DRB3,-DRB4,-DRB5 as a collapsed column pair ('DRB3/4/5'), you must specify the single locus in the Loci.set if you wish them to be included in an analysis set (i.e., 'DRB3' **NOT** 'DRB3/4/5'). The pair of alleles for a locus must be in adjacent columns in the analyzed data set.
 
 Running multiple sets is generally only relevant for the haplotype analysis without all pairwise combinations. For all other analyses, loci are treated independently. Consider running haplotype analysis independently when optioning multi-locus sets that included overlapping loci to avoid redundancies. Each locus set's output will be contained within a separate set folder numbered numerically corresponding to their order in the Loci.set parameter (see Data Output section).
 
@@ -140,7 +140,7 @@ Running multiple sets is generally only relevant for the haplotype analysis with
 
 Class: Numeric. Optional.
 
-e.g., `Exon=3` -or- `Exon=c(3,5,6)`
+e.g., `Exon=3` -or- `Exon=c(3,5,6)` -or- `Exon=c(2:3)` -or- `Exon=1:4`
 
 A single numeric or numeric vector that defines exons to target in the amino acid analysis. The amino acid alignment is parsed according to the overlap of the defined exons. Only relevant to the amino acid analysis. The defined exons are not required to be continuous. Multiple sets are not analyzed separately. The defined exons are applied to all loci in the the analysis. If an exon does not exist for a given locus, BIGDAWG will register and error and the analysis will stop. In such instances, it is recommended you analyze those Loci separately. When amino acid codons overlap exon boundaries, they exon with the majority overlap (2 out of 3 nucleotides) is assigned that residue.
 

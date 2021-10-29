@@ -11,6 +11,8 @@ Err.Log <- function (Output, x, y=NULL, z=NULL) {
   cat("*****ERROR!******\n")
   switch(x,
          #Parameters
+         Loci.Set = { paste("\nInvalid ",y," parameter. Must be formatted as a list. Please see vignette.",sep="") },
+         Exon = { paste("\nInvalid ",y," parameter. Must be formatted as a numeric. Please see vignette.",sep="") },
          P.Missing = { Error <- paste("\nNo ",y," specified. This parameter is not optional. Please see vignette.",sep="") },
          P.Error = { Error <- paste("\nInvalid ",y," parameter. Please see vignette.",sep="") },
          Windows.Cores = { Error <- "\nYou have exceed the maximum allowable cores for Windows. Please see vignette." },
