@@ -41,7 +41,8 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALS
 
   # CHECK PARAMETERS
   if( missing(Data) ) { Err.Log("P.Missing","Data") ; stop("Analysis Stopped.",call.=FALSE) }
-  Check.Params(HLA,All.Pairwise,Trim,Res,EVS.rm,Missing,Cores.Lim,Return,Output,Merge.Output,Verbose)
+  HLA <- as.logical(HLA)
+  Check.Params(HLA, Loci.Set, Exon, All.Pairwise, Trim, Res, EVS.rm, Missing, Cores.Lim, Return, Output, Merge.Output, Verbose)
 
   # MULTICORE LIMITATIONS
   Cores <- Check.Cores(Cores.Lim,Output)
@@ -125,7 +126,7 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALS
   Data.Col <- seq(3,ncol(Tab))
 
   # RUN TESTS DEFINITIONS
-  if (missing(Run.Tests)) { Run <- c("HWE","H","L","A") } else { Run <- Run.Tests }
+  if ( missing(Run.Tests) ) { Run <- c("HWE","H","L","A") } else { Run <- Run.Tests }
   if(!HLA) {
     if("A" %in% Run) {
       cat("Not HLA data. Skipping Amino Acid Analysis.\n")
