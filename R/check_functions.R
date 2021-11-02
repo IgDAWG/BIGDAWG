@@ -424,10 +424,17 @@ CheckRelease <- function(Package=T,Alignment=T,Output=F) {
     if(Alignment) {
 
       # Get IMGT Release Version
-      download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/release_version.txt",destfile="release_version.txt",method="libcurl")
-      Release <- read.table("release_version.txt",comment.char="",sep="\t")
-      Release <- apply(Release,MARGIN=1,FUN= function(x) gsub(": ",":",x))
-      RV.current <- unlist(strsplit(Release[3],split=":"))[2]
+
+      # release_version not updated consistently
+      #download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/release_version.txt",destfile="release_version.txt",method="libcurl")
+      #Release <- read.table("release_version.txt",comment.char="",sep="\t")
+      #Release <- apply(Release,MARGIN=1,FUN= function(x) gsub(": ",":",x))
+      #RV.current <- unlist(strsplit(Release[3],split=":"))[2]
+
+      URL=file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/Allele_status.txt",method=getOption("url.method", "libcurl"))
+      df <- read.table(URL,sep="\t",nrows=3,comment.char="")
+      df.v <- unlist(strsplit(df[3,],split=" "))
+      RV.current <- paste(df.v[3:4],collapse=" ")
 
       # Get BIGDAWG
       UPL <- paste(path.package('BIGDAWG'),"/data/UpdatePtnAlign.RData",sep="")
@@ -446,13 +453,13 @@ CheckRelease <- function(Package=T,Alignment=T,Output=F) {
     }
 
     cat("\n")
-    if(Package) { cat("BIGDAWG Versions:\n","Installed Version: ",CurrR,"\n CRAN Release Version: ",CranR,"\n Developmental version: ",GitHubR,"\n") }
+    if(Package) { cat("BIGDAWG Package Versions:\n","Installed Version: ",CurrR,"\n CRAN Release Version: ",CranR,"\n Developmental version: ",GitHubR,"\n") }
     if(Package & Alignment) { cat("\n") }
     if(Alignment) {
       if(UPL.flag) {
-        cat("IMGT/HLA Versions:\n","IMGT/HLA Version: ",RV.current,"\n Installed version (from update): ",RV.BIGDAWG,"\n")
+        cat("IMGT/HLA Versions:\n","IMGT/HLA Version: ",RV.current,"\n BIGDAWG version (from update): ",RV.BIGDAWG,"\n")
       } else {
-        cat("IMGT/HLA Versions:\n","IMGT/HLA Version: ",RV.current,"\n Installed version: ",RV.BIGDAWG,"\n")
+        cat("IMGT/HLA Versions:\n","IMGT/HLA Version: ",RV.current,"\n BIGDAWG version: ",RV.BIGDAWG,"\n")
       }
     }
     cat("\n")
