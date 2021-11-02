@@ -228,11 +228,15 @@ RunChiSq <- function(x) {
       # True = OK ; False = Not good for Chi Square
       ExpCnts <- chisq.test(New.df)$expected
       if(sum(ExpCnts<5)==0){
-        flag <- FALSE
-      } else if( sum(ExpCnts<5)/sum(ExpCnts>=0)<=0.2 && sum(ExpCnts>=1)>length(ExpCnts) ){
-        flag <- FALSE
-      } else {
+        # all expected are greater than 5
         flag <- TRUE
+      } else if( sum(ExpCnts<5)/sum(ExpCnts>=0)<=0.2 && sum(ExpCnts>=1)==length(ExpCnts) ){
+        # expected counts < 5 are greater than or equal to 20%
+        # all individual counts are >= 1
+        flag <- TRUE
+      } else {
+        # else flag contingency table
+        flag <- FALSE
       }
 
       ## chi square test on binned data
@@ -465,17 +469,22 @@ RunChiSq_c <- function(x) {
     putOrder <- order(row.names(New.df))
     New.df <- New.df[putOrder,]
 
+
     if(nrow(New.df)>1) {
 
+      ExpCnts <- chisq.test(New.df)$expected
       # flag if final matrix fails Cochran's rule of thumb (more than 20% of exp cells are less than 5)
       # True = OK ; False = Not good for Chi Square
-      ExpCnts <- chisq.test(New.df)$expected
       if(sum(ExpCnts<5)==0){
-        flag <- FALSE
-      } else if( sum(ExpCnts<5)/length(ExpCnts)<=0.2 && sum(ExpCnts>=1)==length(ExpCnts) ){
-        flag <- FALSE
-      } else {
+        # all expected are greater than 5
         flag <- TRUE
+      } else if( sum(ExpCnts<5)/sum(ExpCnts>=0)<=0.2 && sum(ExpCnts>=1)==length(ExpCnts) ){
+        # expected counts < 5 are greater than or equal to 20%
+        # all individual counts are >= 1
+        flag <- TRUE
+      } else {
+        # else flag contingency table
+        flag <- FALSE
       }
 
       ## chi square test on binned data
@@ -504,7 +513,7 @@ RunChiSq_c <- function(x) {
       chisq.out <- list(Matrix = New.df,
                         Binned = binned,
                         Test = tmp.chisq,
-                        Flag = flag)
+                        Flag = FALSE)
     }
 
 
