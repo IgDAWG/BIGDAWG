@@ -269,24 +269,24 @@ PreCheck <- function(Tab,All.ColNames,rescall,HLA,Verbose,Output) {
   }
 
   if(HLA) {
-    Out <- list(SampleSize=nrow(Tab),
+    Out <- list(Sample.Size=nrow(Tab),
                    No.Controls=nGrp0,
                    No.Cases=nGrp1,
-                   AlleleCount=nrow(Tab)*2,
-                   TotalLoci=nLoci,
+                   Allele.Count=nrow(Tab)*2,
+                   Total.Loci=nLoci,
                    Loci=paste(Loci,collapse=", "),
                    AllelePerLocus=paste(nGTYPE,collapse=", "),
                    MissingPerLocus=paste(nMissing,collapse=", "),
                    MaxResGrp0=paste(Grp0res,"-Field",sep=""),
                    MaxResGrp1=paste(Grp1res,"-Field",sep=""),
-                   SuggestedRes=paste(min(Grp0res,Grp1res),"-Field",sep=""),
+                   Suggested.Res=paste(min(Grp0res,Grp1res),"-Field",sep=""),
                    SetRes=rescall)
   } else {
-    Out <- list(SampleSize=nrow(Tab),
+    Out <- list(Sample.Size=nrow(Tab),
                    No.Controls=nGrp0,
                    No.Cases=nGrp1,
-                   AlleleCount=nrow(Tab)*2,
-                   TotalLoci=nLoci,
+                   Allele.Count=nrow(Tab)*2,
+                   Total.Loci=nLoci,
                    Loci=paste(Loci,collapse=", "),
                    AllelePerLocus=paste(nGTYPE,collapse=", "),
                    MissingPerLocus=paste(nMissing,collapse=", "),
