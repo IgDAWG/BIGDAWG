@@ -100,6 +100,8 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
   }
 
   ## overall.chisq_out
+  rmPos <- match(FlagAA.fail,names(ChiSqTabAA.list))
+  ChiSqTabAA.list <- ChiSqTabAA.list[-rmPos]
   if(length(ChiSqTabAA.list)>1) {
     ChiSq.list <- lapply(ChiSqTabAA.list,"[[",3)
     ChiSq.out <- do.call(rbind,ChiSq.list)
@@ -120,6 +122,8 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
   }
 
   ## ORtable_out
+  rmPos <- match(FlagAA.fail,names(OR.list))
+  OR.list <- OR.list[-rmPos]
   if(length(OR.list)>1) {
     OR.out <- do.call(rbind,OR.list)
     if(!is.null(OR.out)) {
@@ -129,8 +133,8 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
                       OR.out)
       colnames(OR.out) <- c("Locus","Position","Residue","OR","CI.lower","CI.upper","p.value","sig")
       rownames(OR.out) <- NULL
-      rmRows <- which(OR.out[,'sig']=="NA")
-      if( length(rmRows > 0) ) {  OR.out <- OR.out[-rmRows,,drop=F] }
+      rmRows <- unique(which(OR.out[,'sig']=="NA"))
+      if( length(rmRows) > 0 ) {  OR.out <- OR.out[-rmRows,,drop=F] }
       A.tmp[['OR']] <- OR.out
     } else {
       Names <- c("Locus","Position","Residue","OR","CI.lower","CI.upper","p.value","sig")
@@ -142,6 +146,8 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
   }
 
   ## Final_binned_out (Final Table)
+  rmPos <- match(FlagAA.fail,names(Final_binned.list))
+  Final_binned.list <- Final_binned.list[-rmPos]
   if( length(Final_binned.list)>1 ) {
     Final_binned.out <- do.call(rbind,Final_binned.list)
     if(!is.null(Final_binned.out)) {

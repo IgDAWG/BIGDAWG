@@ -43,7 +43,7 @@ H.MC <- function(genos.sub,grp,Strict.Bin,Verbose) {
     if(Strict.Bin) { Result <- RunChiSq(haps_counts) } else { Result <- RunChiSq_c(haps_counts) }
 
 
-    if( is.na(Result$Flag) ) {
+    if( !(Result$Flag) ) {
 
       haps_binned <- NULL
       Final_binned <- haps_counts
@@ -81,6 +81,10 @@ H.MC <- function(genos.sub,grp,Strict.Bin,Verbose) {
       if( length(rmRows > 0) ) {  ORout <- ORout[-rmRows,,drop=F] }
 
     }
+
+
+    ####################################################### Build Output List
+
 
     #haps_binned - Binned Haplotypes
     if( is.null(row.names(haps_binned)) ) { names <- "Nothing.binned" } else { names <- rownames(haps_binned) }
