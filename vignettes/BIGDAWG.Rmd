@@ -142,7 +142,7 @@ Class: Numeric. Optional.
 
 e.g., `Exon=3` -or- `Exon=c(3,5,6)` -or- `Exon=c(2:3)` -or- `Exon=1:4`
 
-A single numeric or numeric vector that defines exons to target in the amino acid analysis. The amino acid alignment is parsed according to the overlap of the defined exons. Only relevant to the amino acid analysis. The defined exons are not required to be continuous. Multiple sets are not analyzed separately. The defined exons are applied to all loci in the the analysis. If an exon does not exist for a given locus, BIGDAWG will register and error and the analysis will stop. In such instances, it is recommended you analyze those Loci separately. When amino acid codons overlap exon boundaries, they exon with the majority overlap (2 out of 3 nucleotides) is assigned that residue.
+A single numeric or numeric vector that defines exons to target in the amino acid analysis. The amino acid alignment is parsed according to the overlap of the defined exons. When amino acid codons overlap exon boundaries, the exon with the majority overlap (2 out of 3 nucleotides) is assigned that residue. This argument is only relevant to the amino acid analysis. The defined exons are not required to be continuous. Multiple sets are not analyzed separately. The defined exons are applied to all loci in the the analysis. If an exon does not exist for a given locus, BIGDAWG will register an error and the analysis will stop. In such instances, it is recommended you analyze those loci separately.
 
 **All.Pairwise**
 
@@ -208,7 +208,7 @@ Turns on or off the writing of results to files. The default will write all resu
 
 Class: Logical. Optional. Default = F.
 
-Turns on or off the merging of all analysis results into single files labeled 'Merged_xxxx.txt". This process is rapid for smaller sets of loci (less than 50). However it can become increasingly cpu time intensive when there are many loci analyzed in conjuction with all pairwise combinations in the haplotype analysis. This parameter is subordinate to Output=T.
+Turns on or off the merging of all analysis results into single files labeled 'Merged_xxxx.txt". This process is rapid for smaller sets of loci (less than 50). However it can become increasingly cpu time intensive when there are many loci analyzed in conjunction with all pairwise combinations in the haplotype analysis. This parameter is subordinate to Output=T.
 
 **Verbose**
 
