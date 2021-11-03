@@ -247,7 +247,7 @@ BD <- BIGDAWG(Data="data.txt", Output=F, Return=T, Verbose=F)
 
 ## Updating the bundled IMGT/HLA protein alignment
 
-For the amino acid analysis, BIGDAWG is bundled with HLA protein alignment data using the above indicated database release. These bundled alignments can be updated to the most recent release [IMGT/HLA](https://www.ebi.ac.uk/ipd/imgt/hla). Future database updates do not guarantee compatibility with the updating tool.
+For the amino acid analysis, BIGDAWG is bundled with HLA protein alignment data using the above indicated database release. These bundled alignments can be updated to the most recent release [IPD-IMGT/HLA](https://www.ebi.ac.uk/ipd/imgt/hla/). Future database updates do not guarantee compatibility with the updating tool.
 
 ```
 # Identify the installed and current release of the bundled IMGT/HLA database release
