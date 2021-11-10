@@ -231,11 +231,12 @@ RunChiSq <- function(x) {
         # all expected are greater than 5
         flag <- TRUE
       } else if( sum(ExpCnts<5)/sum(ExpCnts>=0)<=0.2 && sum(ExpCnts>=1)==length(ExpCnts) ){
-        # expected counts < 5 are greater than or equal to 20%
+        # expected counts < 5 are greater than or equal to 20% of cells
         # all individual counts are >= 1
         flag <- TRUE
       } else {
         # else flag contingency table
+        # invalid
         flag <- FALSE
       }
 

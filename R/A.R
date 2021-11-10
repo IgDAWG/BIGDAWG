@@ -63,14 +63,31 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
 
   A.tmp <- list()
 
-  ## AAlog_out - Positions with insufficient variation
-  csRange <- which(FlagAA.list==FALSE)
+  ## AAlog_out - Positions with insufficient variation or invalid ChiSq
+  csRange <- which(FlagAA.list==FALSE) # all failed ChiSeq
   FlagAA.fail <- rownames(do.call(rbind,FlagAA.list[csRange]))
-  AAlog.out <- cbind(rep(Locus,length(FlagAA.fail)),
-                     FlagAA.fail,
-                     rep("Insufficient variation at position.",length(FlagAA.fail)))
+
+  # identify insufficient vs invalid flags
+  invRange <- intersect(names(csRange),
+                        names(which(lapply(Final_binned.list,nrow)>=2)) )# invalid cont table
+  isfRange <- setdiff(names(csRange),invRange) # insufficient variation
+
+  if( length(isfRange)>=1 ){
+    AAlog.out.isf <- cbind(rep(Locus,length(isfRange)),
+                           isfRange,
+                           rep("Insufficient variation at position.",length(isfRange)))
+  } else { isfRange <- NULL }
+  if( length(invRange)>=1 ){
+    AAlog.out.inv <- cbind(rep(Locus,length(invRange)),
+                           invRange,
+                           rep("Position invalid for Chisq test.",length(invRange)))
+  } else { invRange <- NULL }
+
+  # Final AAlog.out
+  AAlog.out <- rbind(AAlog.out.inv, AAlog.out.isf)
   colnames(AAlog.out) <- c("Locus","Position","Comment")
   rownames(AAlog.out) <- NULL
+  AAlog.out <- AAlog.out[match(FlagAA.fail,AAlog.out[,'Position']),]
   A.tmp[['log']] <- AAlog.out
 
   ## AminoAcid.binned_out
