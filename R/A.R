@@ -67,27 +67,31 @@ A <- function(Locus,loci.ColNames,genos,grp,Strict.Bin,ExonAlign,Cores) {
   csRange <- which(FlagAA.list==FALSE) # all failed ChiSeq
   FlagAA.fail <- rownames(do.call(rbind,FlagAA.list[csRange]))
 
-  # identify insufficient vs invalid flags
-  invRange <- intersect(names(csRange),
-                        names(which(lapply(Final_binned.list,nrow)>=2)) )# invalid cont table
-  isfRange <- setdiff(names(csRange),invRange) # insufficient variation
+  if( length(csRange)>0 ) {
 
-  if( length(isfRange)>=1 ){
-    AAlog.out.isf <- cbind(rep(Locus,length(isfRange)),
-                           isfRange,
-                           rep("Insufficient variation at position.",length(isfRange)))
-  } else { AAlog.out.isf <- NULL }
-  if( length(invRange)>=1 ){
-    AAlog.out.inv <- cbind(rep(Locus,length(invRange)),
-                           invRange,
-                           rep("Position invalid for Chisq test.",length(invRange)))
-  } else { AAlog.out.inv <- NULL }
+    # identify insufficient vs invalid flags
+    invRange <- intersect(names(csRange),
+                          names(which(lapply(Final_binned.list,nrow)>=2)) )# invalid cont table
+    isfRange <- setdiff(names(csRange),invRange) # insufficient variation
 
-  # Final AAlog.out
-  AAlog.out <- rbind(AAlog.out.inv, AAlog.out.isf)
-  colnames(AAlog.out) <- c("Locus","Position","Comment")
-  rownames(AAlog.out) <- NULL
-  AAlog.out <- AAlog.out[match(FlagAA.fail,AAlog.out[,'Position']),]
+    if( length(isfRange)>=1 ){
+      AAlog.out.isf <- cbind(rep(Locus,length(isfRange)),
+                             isfRange,
+                             rep("Insufficient variation at position.",length(isfRange)))
+    } else { AAlog.out.isf <- NULL }
+    if( length(invRange)>=1 ){
+      AAlog.out.inv <- cbind(rep(Locus,length(invRange)),
+                             invRange,
+                             rep("Position invalid for Chisq test.",length(invRange)))
+    } else { AAlog.out.inv <- NULL }
+
+    # Final AAlog.out
+    AAlog.out <- rbind(AAlog.out.inv, AAlog.out.isf)
+    colnames(AAlog.out) <- c("Locus","Position","Comment")
+    rownames(AAlog.out) <- NULL
+    AAlog.out <- AAlog.out[match(FlagAA.fail,AAlog.out[,'Position']),]
+
+  } else { AAlog.out <- NULL }
   A.tmp[['log']] <- AAlog.out
 
   ## AminoAcid.binned_out
