@@ -19,6 +19,7 @@
 #' @param Merge.Output Logical Should analysis results be merged into a single file for easy access.
 #' @param Verbose Logical Should a summary of each analysis be displayed in console.
 #' @examples
+#' \dontrun{
 #' ### The following examples use the synthetic data set bundled with BIGDAWG
 #'
 #' # Haplotype analysis with no missing genotypes for two loci sets
@@ -32,6 +33,7 @@
 #' # Hardy-Weinberg analysis trimming data to 2-Field resolution with no output to files (console only)
 #' # Significant locus deviation at DQB1
 #' BIGDAWG(Data="HLA_data", Run.Tests="HWE", Trim=TRUE, Res=2, Output=FALSE)
+#' }
 BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALSE, Trim=FALSE, Res=2, EVS.rm=FALSE, Missing=2, Strict.Bin=FALSE, Cores.Lim=1L, Results.Dir, Return=FALSE, Output=TRUE, Merge.Output=FALSE, Verbose=TRUE) {
 
   options(warn=-1)
