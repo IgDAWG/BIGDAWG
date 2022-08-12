@@ -8,17 +8,9 @@ GetFiles <- function(Loci) {
   #downloads hla_nom_p.txt file
 
   # Get P-Groups Files
-  download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/wmda/hla_nom_p.txt",destfile="hla_nom_p.txt",method="libcurl")
+  download.file("https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/wmda/hla_nom_p.txt",destfile="hla_nom_p.txt",method="libcurl")
 
   # Get Release Version
-  #download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/release_version.txt",destfile="release_version.txt",method="libcurl")
-  #Release <- read.table("release_version.txt",comment.char="",sep="\t")
-  #Release <- apply(Release,MARGIN=1,FUN= function(x) gsub(": ",":",x))
-  #RD <- unlist(strsplit(Release[2],split=":"))[2]
-  #RV <- unlist(strsplit(Release[3],split=":"))[2]
-  #write.table(c(RD,RV),file="Release.txt",quote=F,col.names=F,row.names=F)
-  #file.remove("release_version.txt")
-
   df <- readLines(con="hla_nom_p.txt", n=3)
   RD <- unlist(strsplit(df[2],split=" "))[3]
   RV <- paste(unlist(strsplit(df[3],split=" "))[3:4],collapse=" ")
@@ -28,7 +20,7 @@ GetFiles <- function(Loci) {
   for(i in 1:length(Loci)) {
     Locus <- Loci[i]
     FileName <- paste(Locus,"_prot.txt",sep="")
-    URL <- paste("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/",FileName,sep="")
+    URL <- paste("https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/alignments/",FileName,sep="")
     download.file(URL,destfile = FileName,method="libcurl")
   }
 

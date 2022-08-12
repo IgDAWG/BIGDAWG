@@ -1,3 +1,7 @@
+Changes in version 3.0.4 (2022-08-12)
+   o Bug identified when using R > v4.1
+   o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.49 (2022-07)).
+
 Changes in version 3.0.3 (2021-11-01)
    o Removed invariant positions from amino analysis output
    o Minor formatting changes to output files

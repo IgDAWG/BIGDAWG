@@ -42,10 +42,10 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
 
     if( !Result$Flag ) {
 
-      alleles_binned <- NA
-      Final_binned <- NA
-      overall.chisq <- NA
-      ORout <- NA
+      alleles_binned <- NULL
+      Final_binned <- NULL
+      overall.chisq <- NULL
+      ORout <- NULL
 
     } else {
 
@@ -65,10 +65,10 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
 
   } else {
 
-    alleles_binned <- NA
-    Final_binned <- NA
-    overall.chisq <- NA
-    ORout <- NA
+    alleles_binned <- NULL
+    Final_binned <- NULL
+    overall.chisq <- NULL
+    ORout <- NULL
 
   }
 
@@ -77,8 +77,10 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
   L.tmp <- list()
 
   ## Alleles.binned_out
-  if(sum(is.na(alleles_binned))==2) { alleles_binned <- NA }
-  if( !is.na(alleles_binned) ) {
+  if( !is.null(alleles_binned) ) {
+    if( sum(is.na(alleles_binned))==2) { alleles_binned <- NULL }
+  }
+  if( !is.null(alleles_binned) ) {
     Allele.binned.tmp <- cbind(rep(Locus,nrow(alleles_binned)),
                                rownames(alleles_binned),
                                alleles_binned)
@@ -106,7 +108,7 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
 
 
   ## ORtable_out
-  if(!is.na(ORout)) {
+  if(!is.null(ORout)) {
     ORtable_out.tmp <- cbind(rep(Locus,nrow(ORout)),
                              rownames(ORout),
                              ORout)
@@ -124,7 +126,7 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
 
 
   ## overall.chisq_out
-  if(!is.na(overall.chisq)) {
+  if(!is.null(overall.chisq)) {
     overall.chisq.tmp <- cbind(Locus, overall.chisq)
     rownames(overall.chisq.tmp) <- NULL
     colnames(overall.chisq.tmp) <- c("Locus","X.square","df","p.value","sig")
@@ -138,7 +140,7 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
 
 
   ## Final_binned_out
-  if(!is.na(Final_binned)) {
+  if(!is.null(Final_binned)) {
     Final_binned.tmp <- cbind(rep(Locus,nrow(Final_binned)),
                               rownames(Final_binned),
                               Final_binned)
