@@ -25,7 +25,6 @@ A.wrapper <- function(loci,loci.ColNames,genos,grp,Exon,EPL,Cores,Strict.Bin,Out
   Final_binned <- list()
 
   cat("Processing Locus: ")
-  cat(colnames(EPL))
 
   # Loop Through Loci
   for(x in 1:length(loci)) {
