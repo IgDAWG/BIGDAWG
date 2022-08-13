@@ -91,7 +91,7 @@ names(BD) - Display complete list of available sets to index. For a complete lis
 
 ## Error Messages and Codes
 
-BIGDAWG has a few built-in checks to ensure data format consistency and compatibility, especially for HLA data. BIGDAWG also does a parameter review before performing chi-squared tests and returns ‘NCalc’ (not calculated) when all genotypes have expected counts < 5 or the degrees of freedom do not allow for a test (e.g., dof < 1).
+BIGDAWG has a few built-in checks to ensure data format consistency and compatibility, especially for HLA data. BIGDAWG also performs a contingency table review before performing chi-squared tests and returns ‘NCalc’ (not calculated) when all genotypes have expected counts < 5 or the degrees of freedom do not allow for a test (e.g., dof < 1).
 
 ## Known Issues
 
@@ -178,7 +178,7 @@ Sets the allowable per subject threshold for missing alleles. Relevant to runnin
 
 Class: Logical. Optional. Default = FALSE.
 
-Sets whether strict binning should be used during Chi Square testing. Strict binning (Strict.Bin = T) will bin all rare cells (expected count < 5). Otherwise, BIGDAWG will allow for up to 20% of the cells to have expected counts less than 5. Currently limited to the H, L, and A tests. This may rescue haplotypes/alleles/amino acids from binning and help identify significant loci/alleles.
+Sets whether strict binning should be used during Chi Square testing. Strict binning (Strict.Bin = T) will bin all rare cells (expected count < 5). Otherwise, BIGDAWG will allow for up to 20% of the cells to have expected counts less than 5. Currently limited to the H, L, and A tests. This "relaxed" binning may rescue haplotypes/alleles/amino acids from binning and help identify significant loci/alleles.
 
 **Cores.Lim**
 
