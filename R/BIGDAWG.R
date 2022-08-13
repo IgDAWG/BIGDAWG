@@ -97,8 +97,9 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALS
   cat("Data Input:",Data.Flag,"\n\n\n")
 
   # Convert GLS data
-  if( ncol(Tab)==3 && !HLA ) { Err.Log(Output,"notHLA.GLS") }
-  if( ncol(Tab)==3 && HLA ) {
+  if( ncol(Tab) == 3 ) { GLSFLAG = TRUE }
+  if( GLSFLAG && !HLA ) { Err.Log(Output,"notHLA.GLS") }
+  if( GLSFLAG && HLA ) {
     cat("Converting Gene List Strings to Tabular Format...\n\n")
     Tab <- GLSconvert(Tab,Convert="GL2Tab",System="HLA",File.Output="R",Strip.Prefix=T,Abs.Fill=T,Cores.Lim=Cores)
   }
