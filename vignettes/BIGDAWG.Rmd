@@ -1,7 +1,7 @@
 ---
 title: "BIGDAWG"
 author: "Derek Pappas, Ph.D. (dpappas@chori.org)"
-date: "2022-08-13"
+date: "2022-09-22"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{BIGDAWG}
@@ -11,7 +11,7 @@ vignette: >
 
 ## Overview
 
-'Bridging ImmunoGenomic Data-Analysis Workflow Gaps' ('BIGDAWG') is an integrated analysis system that automates the manual data-manipulation and trafficking steps (the gaps in an analysis workflow) normally required for analyses of highly polymorphic genetic systems (e.g., the immunological human leukocyte antigen (HLA) and killer-cell Immunoglobulin-like receptor (KIR) genes) and their respective genomic data (immunogenomic) (Pappas DJ, Marin W, Hollenbach JA, Mack SJ. 2016. 'Bridging ImmunoGenomic Data Analysis Workflow Gaps (BIGDAWG): An integrated case-control analysis pipeline.' [Human Immunology. 77:283-287](https://pubmed.ncbi.nlm.nih.gov/26708359/)). Starting with unambiguous genotype data for case-control groups, 'BIGDAWG' performs tests of Hardy-Weinberg equilibrium, and carries out case-control association analyses for haplotypes, individual loci, specific HLA exons, and HLA amino acid positions.
+'Bridging ImmunoGenomic Data-Analysis Workflow Gaps' ('BIGDAWG') is an integrated analysis system that automates the manual data-manipulation and trafficking steps (the gaps in an analysis workflow) normally required for analyses of highly polymorphic genetic systems (e.g., the immunological human leukocyte antigen (HLA) and killer-cell Immunoglobulin-like receptor (KIR) genes) and their respective genomic data (immunogenomic) (Pappas DJ, Marin W, Hollenbach JA, Mack SJ. 2016. 'Bridging ImmunoGenomic Data Analysis Workflow Gaps (BIGDAWG): An integrated case-control analysis pipeline.' [Human Immunology. 77:283-287](https://pubmed.ncbi.nlm.nih.gov/26708359/)). Starting with unambiguous genotype data for case-control groups, 'BIGDAWG' performs tests of Hardy-Weinberg equilibrium, and carries out case-control association analyses for haplotypes, individual loci, specific HLA exons, and HLA amino acid positions. For HLA amino acid positions, analyses are currently limited to the loci HLA-A, B, C, DPA1, DPB1, DQA1, DQB1, DRB1, DRB3, DRB4, and DRB5.
 
 ## Input Data
 
@@ -91,7 +91,7 @@ names(BD) - Display complete list of available sets to index. For a complete lis
 
 ## Error Messages and Codes
 
-BIGDAWG has a few built-in checks to ensure data format consistency and compatibility, especially for HLA data. BIGDAWG also performs a contingency table review before performing chi-squared tests and returns ‘NCalc’ (not calculated) when all genotypes have expected counts < 5 or the degrees of freedom do not allow for a test (e.g., dof < 1).
+BIGDAWG has a few built-in checks to ensure data format consistency and compatibility, especially for HLA data. BIGDAWG also performs a contingency table review before performing chi-squared tests and returns ‘NCalc’ (not calculated) when all genotypes have expected counts < 5 or the degrees of freedom do not allow for a test (e.g., dof < 1). BIGDAWG will also check your HLA genotypes against the known alleles relative to the internal IMGT/HLA database version. This check is limited to the loci HLA-A, B, C, DPA1, DPB1, DQA1, DQB1, DRB1, DRB3, DRB4, and DRB5. Other HLA (and non-HLA) loci will throw an error. Please use the parameter "HLA = F" to bypass this check.
 
 ## Known Issues
 

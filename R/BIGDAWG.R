@@ -263,14 +263,18 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALS
 
     # Sanity Check for Expression Variant Suffix Stripping
     if(EVS.rm & CheckHLA(Tab[,Data.Col])) {
+
       cat("--Stripping Expression Variants Suffixes.\n")
       Tab[,Data.Col] <- apply(Tab[,Data.Col],MARGIN=c(1,2),gsub,pattern="[[:alpha:]]",replacement="")
       EVS.loci <- as.list(names(EPL))
       EPL <- lapply(EVS.loci,EVSremoval,EPList=EPL)
       names(EPL) <- EVS.loci ; rm(EVS.loci)
+
     } else if (EVS.rm) {
+
       Err.Log(Output,"Bad.Format.EVS")
       stop("Analysis Stopped.",call. = F)
+
     }
 
     # Sanity Check for Amino Acid Test Feasibility
