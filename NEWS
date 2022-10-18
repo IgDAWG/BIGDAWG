@@ -1,3 +1,8 @@
+Changes in version 3.0.6 (2022-10-17)
+   o Adjusted read.table to prevent name checking
+   o Name change in IMGT/HLA file
+   o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.50)
+
 Changes in version 3.0.5 (2022-09-12)
    o Bug identified when using EVS.rm = T
 

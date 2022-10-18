@@ -74,7 +74,7 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALS
 
       # Read in data file entered as string
       if(!file.exists(Data)) { Err.Log(Output,"Bad.Filename", Data) ; stop("Analysis stopped.",call.=F) }
-      Tab <- read.table(Data, header = T, sep="\t", stringsAsFactors = F, na.strings=NAstrings, fill=T, comment.char = "#", strip.white=T, blank.lines.skip=T, colClasses="character")
+      Tab <- read.table(Data, header = T, sep="\t", stringsAsFactors = F, na.strings=NAstrings, fill=T, comment.char = "#", strip.white=T, blank.lines.skip=T, colClasses="character", check.names=FALSE)
       Data.Flag <- Data
 
     }

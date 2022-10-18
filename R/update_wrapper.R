@@ -24,11 +24,10 @@ UpdateRelease <- function(Force=F,Restore=F,Output=F) {
         setwd(putDir)
 
         # Get IMGT Release Version
-        invisible(download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/release_version.txt",destfile="release_version.txt",method="libcurl"))
-        Release <- read.table("release_version.txt",comment.char="",sep="\t")
-        Release <- apply(Release,MARGIN=1,FUN=function(x) gsub(": ",":",x))
-        RV.current <- unlist(strsplit(Release[3],split=":"))[2]
-        file.remove("release_version.txt")
+        invisible(download.file("ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/version_report.txt",destfile="release_version.txt",method="libcurl"))
+        Release <- read.table("version_report.txt",comment.char="",sep="\t")
+        RV.current <- Release[2]
+        file.remove("version_report.txt")
 
         # Get BIGDAWG
         UPL <- paste(path.package('BIGDAWG'),"/data/UpdatePtnAlign.RData",sep="")
