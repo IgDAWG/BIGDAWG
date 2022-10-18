@@ -13,7 +13,8 @@ vignette: >
 
 GLSconvert represents a suite of tools for cross converting HLA or KIR genotyping data from gene list text strings to multi-column tabular format as desribed in Milius RP, Mack SJ, Hollenbach JA, et al. 2013. Genotype List String: a grammar for describing HLA and KIR genotyping results in a text string. [Tissue Antigens. 82:106-112](https://pubmed.ncbi.nlm.nih.gov/23849068/). 
 
-###Anatomy of a GL String  
+### Anatomy of a GL String
+
 The figure below depicts a genotype List (GL) String representation of a multilocus unphased genotype. A GL String representing HLA-A genotype (A*02:69 and A*23:30, or A*02:302 and, either A*23:26 or A*23:39) and HLA-B genotype (B*44:02:13 and B*49:08) for a single individual is shown. GL String delimiters are parsed hierarchically starting from the locus delimiter (^), proceeding to the genotype delimiter (|), then the chromosome delimiter (+), and ending with the allele delimiter (/). A GL String should include the genetic system name (HLA or KIR) as part of the locus name.
 
 
@@ -90,7 +91,7 @@ Defines the genetic system of the data being converted. This parameter is requir
 
 Class: Logical (Default=FALSE).
 
-Homozygous reduction: Should non-DRBx homozygotes be represent by a single allele name in GL string? For example: HLA-A*01:01:01:01+HLA-A*01:01:01:01 as HLA-A*01:01:01:01. The default behavior to keep both allele names in the GL string. This parameter is only used when Convert = Tab2GL, and only applies to non-DRBx genotype data
+Homozygous reduction: Indicates if non-DRBx homozygotes should be represented by a single allele name in GL string. For example: HLA-A*01:01:01:01+HLA-A*01:01:01:01 as HLA-A*01:01:01:01. The default behavior is to keep both allele names in the GL string. This parameter is only used when Convert = Tab2GL, and only applies to non-DRBx genotype data
 
 **DRB345.Check**
 
