@@ -26,8 +26,7 @@ L.wrapper <- function(nloci,loci,loci.ColNames,genos,grp,Strict.Bin,Output,Verbo
     Locus <- loci[j]
 
     # Run Locus Level Analysis
-    L.list <- L(loci.ColNames,Locus
-                ,genos,grp,Strict.Bin)
+    L.list <- L(loci.ColNames,Locus,genos,grp,Strict.Bin)
 
     # Build Output Lists
     Allele.binned[[Locus]] <- L.list[['binned']]

@@ -1,14 +1,15 @@
 Changes in version 3.0.6 (2022-10-17)
    o Adjustment for data table read-ins
    o Name change in an IMGT/HLA file
-   o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.50.0)
+   o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.50.0, 2022-10)
+   o Calculation adjustment for Odds Ratio Tables. Thanks to Ben Solomon.
 
 Changes in version 3.0.5 (2022-09-12)
    o Bug identified when using EVS.rm = T
 
 Changes in version 3.0.4 (2022-08-13)
    o Bug identified when using R > v4.1
-   o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.49 (2022-07)).
+   o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.49, 2022-07).
    o Adjustment to A test for reporting to file
 
 Changes in version 3.0.3 (2021-11-01)

@@ -15,10 +15,10 @@
 #' @param yaxis two categories of outcome in graph
 #' @param alpha level of significance
 #' @param fisher.or whether odds ratio should be computed by the exact method
-#' @param exact.ci.or whether confidence limite of the odds ratio should be computed by the exact method
+#' @param exact.ci.or whether confidence limit of the odds ratio should be computed by the exact method
 #' @param decimal number of decimal places displayed
 #' @note This function is for internal BIGDAWG use only.
-cci <- function (caseexp, controlex, casenonex, controlnonex, cctable = NULL, graph = TRUE, design = "cohort", main, xlab, ylab, xaxis, yaxis, alpha = 0.05, fisher.or = FALSE, exact.ci.or = TRUE, decimal = 2) {
+cci <- function (caseexp, controlex, casenonex, controlnonex, cctable = NULL, graph = FALSE, design = "cohort", main, xlab, ylab, xaxis, yaxis, alpha = 0.05, fisher.or = TRUE, exact.ci.or = TRUE, decimal = 2) {
 
   if (is.null(cctable)) {
     frame <- cbind(Outcome <- c(1, 0, 1, 0), Exposure <- c(1, 1, 0, 0), Freq <- c(caseexp, controlex, casenonex, controlnonex))
@@ -33,27 +33,30 @@ cci <- function (caseexp, controlex, casenonex, controlnonex, cctable = NULL, gr
   else {
     table1 <- as.table(get("cctable"))
   }
+
   fisher <- fisher.test(table1)
   caseexp <- table1[2, 2]
   controlex <- table1[1, 2]
   casenonex <- table1[2, 1]
   controlnonex <- table1[1, 1]
-  se.ln.or <- sqrt(1/caseexp + 1/controlex + 1/casenonex +
-                     1/controlnonex)
+  se.ln.or <- sqrt(1/caseexp + 1/controlex + 1/casenonex + 1/controlnonex)
+
   if (!fisher.or) {
-    or <- caseexp/controlex/casenonex * controlnonex
-    p.value <- chisq.test(table1, correct = FALSE)$p.value
-  }
-  else {
+    or <- (caseexp * controlnonex) / (casenonex * controlex)
+    #p.value <- chisq.test(table1, correct = FALSE)$p.value
+    p.value <- chisq.test(table1,correct=TRUE)$p.value
+  } else {
     or <- fisher$estimate
     p.value <- fisher$p.value
   }
+
   if (exact.ci.or) {
     ci.or <- as.numeric(fisher$conf.int)
+  } else {
+    #ci.or <- or * exp(c(-1, 1) * qnorm(1 - alpha/2) * se.ln.or)
+    ci.or <- c( exp(log(or) - ( qnorm(1 - alpha/2) * se.ln.or) ), exp(log(or) + ( qnorm(1 - alpha/2) * se.ln.or) ) )
   }
-  else {
-    ci.or <- or * exp(c(-1, 1) * qnorm(1 - alpha/2) * se.ln.or)
-  }
+
   if (graph == TRUE) {
     caseexp <- table1[2, 2]
     controlex <- table1[1, 2]
@@ -93,18 +96,20 @@ cci <- function (caseexp, controlex, casenonex, controlnonex, cctable = NULL, gr
       title(main = main, xlab = xlab, ylab = ylab)
     }
   }
+
   if (!fisher.or) {
     results <- list(or.method = "Asymptotic", or = or, se.ln.or = se.ln.or,
                     alpha = alpha, exact.ci.or = exact.ci.or, ci.or = ci.or,
-                    table = table1, decimal = decimal)
-  }
-  else {
+                    table = table1, decimal = decimal, p.value = p.value)
+  } else {
     results <- list(or.method = "Fisher's", or = or, alpha = alpha,
                     exact.ci.or = exact.ci.or, ci.or = ci.or, table = table1,
-                    decimal = decimal)
+                    decimal = decimal, p.value = p.value)
   }
+
   class(results) <- c("cci", "cc")
   return(results)
+
 }
 
 #' Creation of a 2x2 table using the indicated orientation.
@@ -156,19 +161,19 @@ cci.pval <- function(x) {
   caseNonEx <- x[3]
   controlNonEx <- x[4]
   table1 <- make2x2(caseEx, controlEx, caseNonEx, controlNonEx)
-  tmp1 <- cci(cctable=table1, design = "case-control", graph = FALSE)
+  tmp1 <- cci(cctable=table1, design = "case-control")
   tmp[['OR']] <- round(tmp1$or,digits=2)
   tmp[['CI.L']] <- round(tmp1$ci.or[1],digits=2)
   tmp[['CI.U']] <- round(tmp1$ci.or[2],digits=2)
-  tmp[['p.value']] <-  format.pval(chisq.test(table1, correct=F)$p.value)
-  tmp[['sig']] <- ifelse(chisq.test(table1, correct=F)$p.value <= 0.05,"*","NS")
+  tmp[['p.value']] <-  format.pval(tmp1$p.value)
+  tmp[['sig']] <- ifelse(tmp1$p.value <= 0.05,"*","NS")
   return(tmp)
 }
 
 #' Case Control Odds Ratio Calculation from Epicalc list variation
 #'
-#' Variation of the cci.pvalue function
-#' @param x List of 2x2 matrices to apply the cci.pvalue function. List output of TableMaker.
+#' Variation of the cci.pval function
+#' @param x List of 2x2 matrices to apply the cci.pval function. List output of TableMaker.
 #' @note This function is for internal BIGDAWG use only.
 cci.pval.list <- function(x) {
   tmp <- lapply(x, cci.pval)
@@ -447,9 +452,8 @@ RunChiSq_c <- function(x) {
 
     }
 
-
     # Create final matrix New.df
-    if (No.Bin) {
+    if ( No.Bin || nrow(unbinned)==0 ) {
 
       binned <- cbind(NA,NA)
       colnames(binned) <- c("Group.0","Group.1")
