@@ -1,3 +1,7 @@
+Changes in version 3.0.7 (2023-06-22)
+   o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.52.0, 2023-04)
+   o Bug fix for certain data tables
+
 Changes in version 3.0.6 (2022-10-17)
    o Adjustment for data table read-ins
    o Name change in an IMGT/HLA file
