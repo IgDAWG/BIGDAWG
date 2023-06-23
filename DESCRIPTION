@@ -14,5 +14,5 @@ Depends: R (>= 4.0.0)
 Imports: XML, httr, haplo.stats, parallel
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Encoding: UTF-8
