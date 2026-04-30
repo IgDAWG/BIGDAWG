@@ -1,4 +1,4 @@
-#' Locus Analysis Function
+#' Locus Analysis Function 25Jun2025
 #'
 #' This is the workhorse function for the locus level analysis.
 #' @param loci.ColNames The column names of the loci being analyzed.
@@ -77,10 +77,10 @@ L <- function(loci.ColNames,Locus,genos,grp,Strict.Bin) {
   L.tmp <- list()
 
   ## Alleles.binned_out
-  if( !is.null(alleles_binned) ) {
+  if( any(!is.null(alleles_binned)) ) {
     if( sum(is.na(alleles_binned))==2) { alleles_binned <- NULL }
   }
-  if( !is.null(alleles_binned) ) {
+  if( any(!is.null(alleles_binned)) ) {
     Allele.binned.tmp <- cbind(rep(Locus,nrow(alleles_binned)),
                                rownames(alleles_binned),
                                alleles_binned)

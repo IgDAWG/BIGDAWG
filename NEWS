@@ -1,6 +1,16 @@
+Changes in versoon 3.1.0 (2026-04-29)
+   o Removed reference to http://tools.immunogenomics.org from the DESCRIPTION.
+   o Added the Data.Type parameter to the BIGDAWG() function to identify the 'motif' data type.
+   o Added Livia Tran as a package author.
+
+Changes in version 3.0.9 (2025-06-25)
+   o Fixed "conditon has length >1" error in R v4.2+. Thanks to Ryan Chung for the report.
+   o Removed httr from Imports
+   o Updated URL to 'HLA Nomenclature Naming Alleles' page at hla.alleles.org
+   o Updated email address in vignette
+
 Changes in version 3.0.8 (2023-09-08)
    o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.53, 2023-07)
-   o
 
 Changes in version 3.0.7 (2023-06-22)
    o Updated bundled IMGT/HLA amino acid exon alignment to latest release (Release 3.52.0, 2023-04)

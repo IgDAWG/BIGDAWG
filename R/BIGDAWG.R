@@ -1,4 +1,4 @@
-#' BIGDAWG Main Wrapper Function
+#' BIGDAWG Main Wrapper Function v1.1 Livia Tran March 26, 2026
 #'
 #' This is the main wrapper function for each analysis.
 #' @param Data Name of the genotype data file.
@@ -18,6 +18,8 @@
 #' @param Output Logical Should analysis results be written to output directory.
 #' @param Merge.Output Logical Should analysis results be merged into a single file for easy access.
 #' @param Verbose Logical Should a summary of each analysis be displayed in console.
+#' @param Data.Type String describing the data type in the provided dataset. The
+#' default is set to 'Locus'. Options are 'Locus' or 'Motif'.
 #' @examples
 #' \dontrun{
 #' ### The following examples use the synthetic data set bundled with BIGDAWG
@@ -34,7 +36,8 @@
 #' # Significant locus deviation at DQB1
 #' BIGDAWG(Data="HLA_data", Run.Tests="HWE", Trim=TRUE, Res=2, Output=FALSE)
 #' }
-BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALSE, Trim=FALSE, Res=2, EVS.rm=FALSE, Missing=2, Strict.Bin=FALSE, Cores.Lim=1L, Results.Dir, Return=FALSE, Output=TRUE, Merge.Output=FALSE, Verbose=TRUE) {
+
+BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALSE, Trim=FALSE, Res=2, EVS.rm=FALSE, Missing=2, Strict.Bin=FALSE, Cores.Lim=1L, Results.Dir, Return=FALSE, Output=TRUE, Merge.Output=FALSE, Verbose=TRUE, Data.Type = 'Locus') {
 
   options(warn=-1)
 
@@ -105,7 +108,7 @@ BIGDAWG <- function(Data, HLA=TRUE, Run.Tests, Loci.Set, Exon, All.Pairwise=FALS
   }
 
   # Prep Data for processing and checks
-  Tab <- prepData(Tab)
+  Tab <- prepData(Tab, Data.Type)
 
   # Define and Change to the required output directory
   if (Output) {
@@ -413,8 +416,31 @@ if(Output) { write.table(Check,file="Data_Summary.txt",sep=": ",col.names=F,row.
       grp <- Tabsub[, 2] # phenotype
       #nGrp0 <- length(which(grp==0))*2 #nalleles
       #nGrp1 <- length(which(grp==1))*2 #nalleles
-      loci <- unique(gsub(".1","",colnames(genos),fixed=T)) # name of loci
-      loci.ColNames <- gsub(".1","",colnames(genos),fixed=T) # column names
+
+      loci.ColNames <- gsub(".1","",colnames(genos),fixed=T)
+
+      # the previous line will sub out the first insertion position for an
+      # insertion block
+      # for example, if an insertion block sequence is 300.1, 300.2, and 300.3,
+      # the column names will would be 300.1, 300.1.1, 300.2, 300.2.1, 300.3, and 300.3.1.
+      # using sub removes the first occurrence of '.1' in a string, which affects
+      # the first insertion position for an insertion block
+      # for these cases, find the first insertion position index for any block of
+      # insertions (these positions will still have '.1' attached to them) and
+      # subtract one to find the affected position and paste the '.1' back to
+      # the position name
+
+      if(Data.Type == 'Motif'){
+        insertion_position_start <- which(grepl('.1.1', colnames(genos), fixed = TRUE))-1
+
+        for(i in insertion_position_start){
+          loci.ColNames[i]<-paste(loci.ColNames[i], '.1', sep = '')
+          loci.ColNames[i+1]<-paste(loci.ColNames[i+1], '.1', sep = '')
+        }
+      }
+
+      loci <- unique(loci.ColNames) # name of loci
+
       nloci <- as.numeric(length(loci)) # number of loci
       SetName <- paste('Set',k,sep="")
 

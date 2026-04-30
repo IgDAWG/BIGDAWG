@@ -1,14 +1,26 @@
-#' Prepare imported data
+#' Prepare imported data v 1.1 10 December 2025
 #'
 #' Prepare imported data for processing, checks, and analysis.
 #' @param Tab Genotypes dataframe.
+#' @param data_type The type of data being processed. Options are 'Locus' or 'Motif'.'
 #' @note This function is for internal BIGDAWG use only.
-prepData <- function(Tab) {
+prepData <- function(Tab, data_type) {
 
   Tab[] <- lapply(Tab, as.character)
 
   colnames(Tab) <- gsub( "HLA-","",colnames(Tab) )
-  colnames(Tab) <- gsub( "\\.1|\\.2|\\_1|\\_2","",colnames(Tab) )
+
+  # a dataframe for motif level analysis consists of amino acid positions as the
+  # column name, and amino acid motifs as the content.
+  # insertion positions, indicated by sequential increments of .1 following
+  # the real amino acid position (example: 200.1, 200.1, 200.3) can be column
+  # names, and would be impacted by the following gsub() code. thus, it should
+  # not be executed if data_type = 'Motif'.
+
+  if(data_type != 'Motif'){
+    colnames(Tab) <- gsub( "\\.1|\\.2|\\_1|\\_2","",colnames(Tab) )
+  }
+
   colnames(Tab) <- toupper(colnames(Tab))
   colnames(Tab) <- gsub( "DRB3.4.5|DRB3/4/5","DRB345",colnames(Tab) )
   rownames(Tab) <- NULL

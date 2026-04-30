@@ -1,7 +1,7 @@
 ---
 title: "BIGDAWG"
-author: "Derek Pappas, Ph.D. (dpappas@chori.org)"
-date: "2022-09-12"
+author: "Derek Pappas, Ph.D. (djpappas75@gmail.com)"
+date: "2026-04-29"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{BIGDAWG}
@@ -26,7 +26,7 @@ When there is missing information, either for lack of genotyping information or 
 
 Data missing due to lack of a molecular genotyping result is considered not available (NA). Acceptable NA strings include: NA, ****, -, na and Na. Empty data cells will be considered NA. If your data is formatted as Locus*Allele, please include this formatting for all absent alleles as well (e.g., DRB1*NA).
 
-Data missing due to genomic structural variation (i.e., no locus present) is considered absence. Acceptable absence strings include: Absent, absent, Abs, ABS, ab, Ab, AB, @. The last symbol is the unicode at sign. BIGDAWG allows for a special allele name that indicates absence of an HLA locus: 00, 00:00, 00:00:00 and 00:00:00:00 are all acceptable indicators of HLA locus absence. When choosing to use 00's (zeros) to populate allele name fields, use similar or higher levels of resolution [http://hla.alleles.org](http://hla.alleles.org/nomenclature/naming.html) and follow the same naming convention as with other genotype calls (either with or without locus prefix). If using a single column pair for DRB3/4/5 and the "00" absence indicator, then do **NOT** affix a locus prefix for the absent calls. In this case, only include the locus prefix for known DRB345 genotypes (i.e., DRB3/4/5*00:00 is **NOT** an acceptable name). For HLA data, the 00:00 naming convention is preferred and absent designations will be converted to allow the amino acid analysis to test phenotypic associations with locus absence (see below).
+Data missing due to genomic structural variation (i.e., no locus present) is considered absence. Acceptable absence strings include: Absent, absent, Abs, ABS, ab, Ab, AB, @. The last symbol is the unicode at sign. BIGDAWG allows for a special allele name that indicates absence of an HLA locus: 00, 00:00, 00:00:00 and 00:00:00:00 are all acceptable indicators of HLA locus absence. When choosing to use 00's (zeros) to populate allele name fields, use similar or higher levels of resolution [https://hla.alleles.org](https://hla.alleles.org/pages/nomenclature/naming_alleles/) and follow the same naming convention as with other genotype calls (either with or without locus prefix). If using a single column pair for DRB3/4/5 and the "00" absence indicator, then do **NOT** affix a locus prefix for the absent calls. In this case, only include the locus prefix for known DRB345 genotypes (i.e., DRB3/4/5*00:00 is **NOT** an acceptable name). For HLA data, the 00:00 naming convention is preferred and absent designations will be converted to allow the amino acid analysis to test phenotypic associations with locus absence (see below).
 
 Finally, when missing alleles (due to lack of a genotype call) for a locus are included in the haplotype analysis, the haplotype estimation method may impute the identity of the missing alleles for that subject. If such imputation is not desired, the "Missing"" parameter should be set to 0.
 
@@ -99,7 +99,7 @@ BIGDAWG's output includes locus frequencies to provide convenient access for fut
 
 ## Parameters
 
-`BIGDAWG(Data, HLA=T, Run.Tests, Loci.Set, Exon, All.Pairwise=F, Trim=F, Res=2, Missing=0, Strict.Bin=F, Cores.Lim=1L, Results.Dir, Return=F, Output=T, Verbose=T)`
+`BIGDAWG(Data, HLA=T, Run.Tests, Loci.Set, Exon, All.Pairwise=F, Trim=F, Res=2, Missing=0, Strict.Bin=F, Cores.Lim=1L, Results.Dir, Return=F, Output=T, Verbose=T, Data.Type="Locus")`
 
 **Data**
 
@@ -215,6 +215,12 @@ Turns on or off the merging of all analysis results into single files labeled 'M
 Class: Logical. Optional. Default = T.
 
 Sets the levels of detail that should be displayed on the console. The default will display summaries of the analysis from each specified test. When turned off, only the completion status of each test is displayed.
+
+**Data.Type**
+
+Class: String. Required. Default = 'Locus'.
+
+Describes the type of dataset to be analyzed. The default 'Locus' value indicates a dataset composed of allele names for specific loci. The alternative 'Motif' value identifies a dataset composed of nucleotide or amino-acid motifs.
 
 ## Examples
 
