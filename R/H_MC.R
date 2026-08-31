@@ -91,30 +91,30 @@ H.MC <- function(genos.sub,grp,Strict.Bin,Verbose) {
     haps_binned_fix <- cbind(names,haps_binned)
     colnames(haps_binned_fix) <- c(Haplotype,colnames(haps_binned))
     rownames(haps_binned_fix) <- NULL
-    if( sum(grepl("\\^",haps_binned_fix[,Haplotype]))>0 ) { haps_binned_fix[,Haplotype] <- gsub("\\^","Abs",haps_binned_fix[,Haplotype]) }
+    if( any(grepl("^",haps_binned_fix[,Haplotype],fixed=TRUE)) ) { haps_binned_fix[,Haplotype] <- gsub("^","Abs",haps_binned_fix[,Haplotype],fixed=TRUE) }
 
     #final_binned - Contingency Table for ChiSq
     Final_binned_fix <- cbind(rownames(Final_binned),Final_binned)
     colnames(Final_binned_fix) <- c(Haplotype,colnames(Final_binned))
     rownames(Final_binned_fix) <- NULL
-    if( sum(grepl("^",Final_binned_fix[,Haplotype]))>0 ) { Final_binned_fix[,Haplotype] <- gsub("\\^","Abs",Final_binned_fix[,Haplotype]) }
+    if( any(grepl("^",Final_binned_fix[,Haplotype],fixed=TRUE)) ) { Final_binned_fix[,Haplotype] <- gsub("^","Abs",Final_binned_fix[,Haplotype],fixed=TRUE) }
 
     #haps_freq - Frequencies
     haps_freq_fix <- cbind(rownames(haps_freq),haps_freq)
     colnames(haps_freq_fix) <- c(Haplotype,colnames(haps_freq))
     rownames(haps_freq_fix) <- NULL
-    if(sum(grepl("\\^",haps_freq_fix[,Haplotype]))>0) { haps_freq_fix[,Haplotype] <- gsub("\\^","Abs",haps_freq_fix[,Haplotype]) }
+    if(any(grepl("^",haps_freq_fix[,Haplotype],fixed=TRUE))) { haps_freq_fix[,Haplotype] <- gsub("^","Abs",haps_freq_fix[,Haplotype],fixed=TRUE) }
 
     #ORout - ODDs Ratios
     ORout_fix <- cbind(rownames(ORout),ORout)
     colnames(ORout_fix) <- c(Haplotype,colnames(ORout))
     rownames(ORout_fix) <- NULL
-    if(sum(grepl("\\^",ORout_fix[,Haplotype]))>0) { ORout_fix[,Haplotype] <- gsub("\\^","Abs",ORout_fix[,Haplotype]) }
+    if(any(grepl("^",ORout_fix[,Haplotype],fixed=TRUE))) { ORout_fix[,Haplotype] <- gsub("^","Abs",ORout_fix[,Haplotype],fixed=TRUE) }
 
     #Haplotype - Replace Abs symbols
-    if(sum(grepl("\\^",Tab.Haps[,'Haplotype.1'])) + sum(grepl("\\^",Tab.Haps[,'Haplotype.2'])) >0) {
-      Tab.Haps[,'Haplotype.1'] <- gsub("\\^","Abs",Tab.Haps[,'Haplotype.1'])
-      Tab.Haps[,'Haplotype.2'] <- gsub("\\^","Abs",Tab.Haps[,'Haplotype.2'])
+    if(any(grepl("^",Tab.Haps[,'Haplotype.1'],fixed=TRUE)) || any(grepl("^",Tab.Haps[,'Haplotype.2'],fixed=TRUE)) >0) {
+      Tab.Haps[,'Haplotype.1'] <- gsub("^","Abs",Tab.Haps[,'Haplotype.1'],fixed=TRUE)
+      Tab.Haps[,'Haplotype.2'] <- gsub("^","Abs",Tab.Haps[,'Haplotype.2'],fixed=TRUE)
       }
     colnames(Tab.Haps)[2:3] <- c(paste(Haplotype,".Hap1",sep=""),paste(Haplotype,".Hap2",sep=""))
 
